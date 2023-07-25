@@ -1,0 +1,83 @@
+/* CSS Style for the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr {
+    font-family: "Lato", sans-serif;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* CSS Style for the checkboxes */
+input[type="checkbox"] {
+  transform: scale(1.5);
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+  font-family: "Lato", sans-serif;
+  color: #333;
+  margin: 20px 0;
+}
+
+p {
+  font-size: 16px;
+  font-family: "Lato", sans-serif;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Styles for the form container */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Styles for the form labels */
+label {
+  font-size: 16px;
+  font-family: "Lato", sans-serif;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Styles for the select dropdowns */
+select {
+  padding: 5px;
+  margin-top: 5px;
+  width: 200px;
+}
+
+/* Styles for the submit button */
+button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
