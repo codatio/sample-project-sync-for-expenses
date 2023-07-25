@@ -11,15 +11,15 @@ td {
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #F7FAFD;
 }
 
 tr {
-    font-family: "Lato", sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #F0F4FA;
 }
 
 /* CSS Style for the checkboxes */
@@ -33,15 +33,15 @@ input[type="checkbox"] {
 h1 {
   font-size: 36px;
   font-weight: bold;
-  font-family: "Lato", sans-serif;
-  color: #333;
+  font-family: "Inter", sans-serif;
+  color: #262E3B;
   margin: 20px 0;
 }
 
 p {
   font-size: 16px;
-  font-family: "Lato", sans-serif;
-  color: #555;
+  font-family: "Inter", sans-serif;
+  color: #556680;
   line-height: 1.5;
   margin-bottom: 20px;
 }
@@ -56,8 +56,8 @@ form {
 /* Styles for the form labels */
 label {
   font-size: 16px;
-  font-family: "Lato", sans-serif;
-  color: #555;
+  font-family: "Inter", sans-serif;
+  color: #556680;
   line-height: 1.5;
 }
 
@@ -71,13 +71,13 @@ select {
 /* Styles for the submit button */
 button {
   margin-top: 10px;
-  padding: 10px;
-  background-color: #007bff;
+  padding: 10,16,10,16px;
+  background-color: #482DEB;
   color: #fff;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #2F1BA6;
 }
