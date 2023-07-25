@@ -1,3 +1,5 @@
+# sample-project-sync-for-expenses
+
 ## Getting Started
 
 ### 1. Create a local env file

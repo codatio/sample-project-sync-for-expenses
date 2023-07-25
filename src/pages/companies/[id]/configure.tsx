@@ -81,7 +81,7 @@ function Configure() {
       <div className="flex-container">
         <h1>{companyConfigData.companyName}: Set up</h1>
         <p>
-          Your accounting package is all connected! Let's set up your company
+          Your accounting package is all connected! Now set up your company
         </p>
         <form onSubmit={onSubmit}>
           <label htmlFor="defaultSupplier">Default Supplier</label>
