@@ -1,5 +1,13 @@
 # sample-project-sync-for-expenses
 
+## Prerequisites
+
+Follow the [Sync for Expenses getting started guide](https://docs.codat.io/sync-for-expenses/gettingstarted):
+
+- Enable Sync for Expenses
+- Configure your data type settings
+- Enable an integration (e.g. [QuickBook Online Sandbox](https://docs.codat.io/integrations/accounting/quickbooksonline/accounting-quickbooksonline-new-setup#create-a-quickbooks-online-app-configured-for-sandbox))
+
 ## Getting Started
 
 ### 1. Create a local env file
