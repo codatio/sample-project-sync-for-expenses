@@ -11,10 +11,10 @@ This sample project implements setting a company up for expense sync.
 - [Sign up](https://signup.codat.io/)!
 - Enable Sync for Expenses
 - Configure your [data type settings](https://docs.codat.io/sync-for-expenses/gettingstarted#data-types)
-- Ensure our [accounting](https://app.codat.io/settings/integrations/accounting/manage/mqjo?integrationName=Sandbox) and [commerce](https://app.codat.io/settings/integrations/commerce/manage/aiwb?integrationName=Commerce%20Sandbox) sandbox integrations are enabled. You can disable [Banking Sandbox](https://app.codat.io/settings/integrations/banking/manage/qhnd?integrationName=Banking%20Sandbox).
+- Ensure our [accounting](https://app.codat.io/settings/integrations/accounting/manage/mqjo?integrationName=Sandbox) and [commerce](https://app.codat.io/settings/integrations/commerce/manage/aiwb?integrationName=Commerce%20Sandbox) sandbox integrations are enabled. You can disable [Banking Sandbox](https://app.codat.io/settings/integrations/banking/manage/qhnd?integrationName=Banking%20Sandbox). **Sandbox syncs will fail.**
 
 
-Optionally, try enabling a non-Codat sandbox integration (e.g. [QuickBook Online Sandbox](https://docs.codat.io/integrations/accounting/quickbooksonline/accounting-quickbooksonline-new-setup#create-a-quickbooks-online-app-configured-for-sandbox))
+For the full experience, enable a non-Codat sandbox integration (e.g. [QuickBook Online Sandbox](https://docs.codat.io/integrations/accounting/quickbooksonline/accounting-quickbooksonline-new-setup#create-a-quickbooks-online-app-configured-for-sandbox))
 
 For more information, follow the [Sync for Expenses getting started guide](https://docs.codat.io/sync-for-expenses/gettingstarted).
 

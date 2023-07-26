@@ -1,7 +1,10 @@
+import { FormEvent, useEffect, useRef, useState } from "react"
+import { useRouter } from "next/router";
+
 import { SaveCompanyConfigRequest } from "@/pages/api/companies/[id]/config";
 import { CompanyConfigData } from "@/pages/api/companies/[id]/config-options";
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useRef, useState } from "react"
+
+import styles from "./styles.module.scss";
 
 function Configure() {
   const router = useRouter();
@@ -61,7 +64,6 @@ function Configure() {
       }
 
       const data = await getData(id);
-      console.log(data)
       if (data === null) {
         timeoutRef.current = window.setTimeout(() => getCompanyData(), 1000);
         return;
@@ -79,44 +81,54 @@ function Configure() {
   }
 
   return (
-    <main>
-      <div className="flex-container">
-        <h1>{companyConfigData.companyName}: Set up</h1>
-        <p>
-          Your accounting package is all connected! Now set up your company
-        </p>
-        <form onSubmit={onSubmit}>
-          <label htmlFor="defaultSupplier">Default Supplier</label>
-          <select id="defaultSupplier" name="defaultSupplier">
+    <div className={styles.card}>
+      <h1 className={styles.header}>Configure your settings</h1>
+
+      <p>
+        Your accounting package is all connected, {companyConfigData.companyName}!
+      </p>
+
+      <p>
+        Now set up your sync settings.
+      </p>
+
+      <form onSubmit={onSubmit}>
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="defaultSupplier">Default supplier</label>
+          <select className={styles.input} id="defaultSupplier" name="defaultSupplier">
             {companyConfigData.suppliers.map((supplier) => (
               <option key={supplier.label} value={supplier.value}>
                 {supplier.label}
               </option>
             ))}
           </select>
+        </div>
 
-          <label htmlFor="defaultCustomer">Default Customer</label>
-          <select id="defaultCustomer" name="defaultCustomer">
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="defaultCustomer">Default customer</label>
+          <select className={styles.input} id="defaultCustomer" name="defaultCustomer">
             {companyConfigData.customers.map((customer) => (
               <option key={customer.label} value={customer.value}>
                 {customer.label}
               </option>
             ))}
           </select>
+        </div>
 
-          <label htmlFor="defaultBankAccount">Default Bank Account</label>
-          <select id="defaultBankAccount" name="defaultBankAccount">
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="defaultBankAccount">Default bank account</label>
+          <select className={styles.input} id="defaultBankAccount" name="defaultBankAccount">
             {companyConfigData.bankAccounts.map((account) => (
               <option key={account.label} value={account.value}>
                 {account.label}
               </option>
             ))}
           </select>
+        </div>
 
-          <button type="submit">Continue</button>
-        </form>
-      </div>
-    </main>
+        <button type="submit">Continue</button>
+      </form>
+    </div>
   );
 }
 

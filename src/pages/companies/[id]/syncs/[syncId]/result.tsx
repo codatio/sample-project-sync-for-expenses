@@ -1,8 +1,11 @@
-import { GetSyncResponse } from "@/pages/api/companies/[id]/syncs/[syncId]";
+import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+
+import { GetSyncResponse } from "@/pages/api/companies/[id]/syncs/[syncId]";
+
+import styles from "./styles.module.scss";
 
 interface SyncResult {
   succeeded: boolean;
@@ -59,17 +62,15 @@ function Result() {
   }
 
   return (
-    <main>
-      <div className="flex-container">
-        <h1>Sync Result</h1>
-        <p>
-          {syncResult.result === "success" ? "Sync Succeeded." : "Sync failed."}
-          {syncResult.result === "failure" && (
-            <div>Error: {syncResult.errorMessage}</div>
-          )}
-        </p>
-      </div>
-    </main>
+    <div className={styles.card}>
+      <h1 className={styles.header}>{syncResult.result === "success" ? "Sync succeeded" : "Sync failed"}</h1>
+
+      <p>
+        {syncResult.result === "failure" && (
+          <div><b>Error:</b> {syncResult.errorMessage}</div>
+        )}
+      </p>
+    </div>
   );
 }
 

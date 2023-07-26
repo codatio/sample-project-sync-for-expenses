@@ -1,8 +1,11 @@
-import { ExpenseItem } from "@/data/expenseItem";
+import React, { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
+
 import Decimal from "decimal.js";
 import { useRouter } from "next/router";
-import React, { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
-import styles from './styles.module.css';
+
+import { ExpenseItem } from "@/data/expenseItem";
+
+import styles from "./styles.module.scss";
 
 const ListExpenses = ({
   expenses,
@@ -30,6 +33,7 @@ const ListExpenses = ({
     event.preventDefault();
 
     const expensesToSync: ExpenseItem[] = expenses.filter((e) => e.sync);
+
     const response = await fetch(`/api/companies/${companyId}/sync`, {
       method: "POST",
       headers: {
@@ -37,7 +41,13 @@ const ListExpenses = ({
       },
       body: JSON.stringify(expensesToSync),
     });
+
+    if (response.status !== 200) {
+      throw new Error("Sync failed");
+    }
+
     const syncId = (await response.json()).syncId as string;
+
     await router.push("/companies/[id]/syncs/[syncId]/result", `/companies/${companyId}/syncs/${syncId}/result`);
   };
 
@@ -60,52 +70,48 @@ const ListExpenses = ({
   };
 
   return (
-    <main>
-      <div className="flex-container">
-        <h1>Expenses</h1>
-        <form onSubmit={onSubmit}>
+    <div className={styles.card}>
+      <h1 className={styles.header}>Expenses</h1>
+
+      <form onSubmit={onSubmit}>
+        <div className={styles.tableContainer}>
           <table>
             <thead>
               <tr>
-                <th>Employee Name</th>
-                <th>Description</th>
-                <th>Categories</th>
-                <th>Note</th>
-                <th>Receipt attached</th>
-                <th>Total</th>
                 <th>Sync?</th>
+                <th>Employee name</th>
+                <th>Description</th>
+                <th>Note</th>
+                <th>Categories</th>
+                <th>Total</th>
+                <th>Receipt attached</th>
                 <th>Options</th>
               </tr>
             </thead>
+
             <tbody>
-              {expenses.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.employeeName}</td>
-                  <td>{item.description}</td>
-                  <td>{item.categories.map((c) => c.label).join(", ")}</td>
-                  <td>{item.note}</td>
+              {expenses.map((item, i) => (
+                <tr key={i}>
                   <td>
                     <input
                       type="checkbox"
-                      id={`receiptAttached${index}`}
-                      name={`receiptAttached${index}`}
-                      value="receipt"
-                      disabled={true}
+                      id={`ready${i}`}
+                      name={`ready${i}`}
+                      value="ready"
+                      checked={item.sync || false}
+                      onChange={() => onSetItemToSync(i)}
+                      disabled={!canBeSynced(item)}
                     />
                   </td>
+                  <td>{item.employeeName}</td>
+                  <td>{item.description}</td>
+                  <td>{item.note}</td>
+                  <td>{item.categories.map((c) => c.label).join(", ")}</td>
                   <td>
                     {Decimal.add(item.netAmount, item.taxAmount).toNumber()}
                   </td>
                   <td>
-                    <input
-                      type="checkbox"
-                      id={`ready${index}`}
-                      name={`ready${index}`}
-                      value="ready"
-                      checked={item.sync || false}
-                      onChange={() => onSetItemToSync(index)}
-                      disabled={!canBeSynced(item)}
-                    />
+                    ❌
                   </td>
                   <td>
                     <button
@@ -118,10 +124,10 @@ const ListExpenses = ({
               ))}
             </tbody>
           </table>
-          <button type="submit">Sync</button>
-        </form>
-      </div>
-    </main>
+        </div>
+        <button type="submit">Sync</button>
+      </form>
+    </div>
   );
 };
 

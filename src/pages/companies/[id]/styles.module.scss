@@ -1,15 +1,10 @@
-.container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .card {
   padding: 2em;
   background: white;
   border: 2px solid #ededed;
   border-radius: 4px;
+  max-width: 95vw;
+  max-height: 95vh;
 }
 
 .header {
@@ -26,18 +21,19 @@
   margin-left: 2em;
   padding: 0.5em;
   min-width: 250px;
+  cursor: pointer;
 
   &:hover {
     opacity: 0.75;
   }
 }
 
-.modalWrapper {
-  align-items: center;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  inset: 0;
-  z-index: 2;
+.inputLabel {
+  min-width: 180px;
+}
+
+.tableContainer {
+  border: 2px solid #ededed;
+  border-radius: 4px;
+  overflow: hidden;
 }

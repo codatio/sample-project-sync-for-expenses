@@ -45,11 +45,13 @@ export default async function handler(
   const webhookPayload = body as Webhook;
 
   console.log("Webhook received", webhookPayload);
+
   if (webhookDataIsDataSyncCompleted(webhookPayload.Data)) {
     const dataType = webhookPayload.Data.dataType;
     console.log("storing " + dataType);
     await completedPullOperations.add({companyId: webhookPayload.CompanyId, completedAt: new Date(), dataType});
   }
+  
   if (webhookDataIsSyncWebhook(webhookPayload.Data)) {
     await syncOutcomes.add({
       companyId: webhookPayload.CompanyId,

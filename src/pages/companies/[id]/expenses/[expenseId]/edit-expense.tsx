@@ -1,10 +1,12 @@
-import { useRouter } from "next/router";
 import { Dispatch, FormEvent, SetStateAction } from "react";
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next";
+
 import { ExpenseItem } from "@/data/expenseItem";
 import { CodatSyncExpenses } from "@codat/sync-for-expenses";
 import { MappingOptions } from "@codat/sync-for-expenses/dist/sdk/models/shared";
-import { GetServerSidePropsContext } from "next";
-import styles from './styles.module.css';
+
+import styles from './styles.module.scss';
 
 interface SelectOption {
   label: string;
@@ -98,14 +100,17 @@ const EditExpense = ({
     );
   };
 
+  console.log(mappingOptions)
+
   return (
-    <main>
-      <div className="flex-container">
-        <h1>{`${expenseTransaction!.employeeName} ${
-          expenseTransaction!.description
-        }`}</h1>
-        <form onSubmit={onSubmit}>
-          <label htmlFor="trackingCategories">Tracking categories</label>
+    <div className={styles.card}>
+      <h1>{`${expenseTransaction!.employeeName} ${
+        expenseTransaction!.description
+      }`}</h1>
+
+      <form onSubmit={onSubmit}>
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="trackingCategories">Tracking categories</label>
           <select multiple id="trackingCategories" name="trackingCategories" className={styles.trackingCategories}>
             {mappingOptions.trackingCategories!.map((category) => (
               <option
@@ -121,8 +126,10 @@ const EditExpense = ({
               </option>
             ))}
           </select>
+        </div>
 
-          <label htmlFor="taxRate">Tax rate</label>
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="taxRate">Tax rate</label>
           <select id="taxRate" name="taxRate">
             {mappingOptions.taxRates!.map((taxRate) => (
               <option
@@ -134,8 +141,10 @@ const EditExpense = ({
               </option>
             ))}
           </select>
+        </div>
 
-          <label htmlFor="account">Account</label>
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="account">Account</label>
           <select id="account" name="account">
             {mappingOptions.accounts!.map((account) => (
               <option
@@ -147,19 +156,21 @@ const EditExpense = ({
               </option>
             ))}
           </select>
+        </div>
 
-          <label htmlFor="attachment">Upload an attachment</label>
+        <div className={styles.formRow}>
+          <label className={styles.inputLabel} htmlFor="attachment">Upload an attachment</label>
           <input
             type="file"
             id="attachment"
             name="attachment"
             disabled={true}
           />
+        </div>
 
-          <button type="submit">Save</button>
-        </form>
-      </div>
-    </main>
+        <button type="submit">Save</button>
+      </form>
+    </div>
   );
 };
 
