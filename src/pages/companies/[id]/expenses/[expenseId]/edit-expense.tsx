@@ -100,8 +100,6 @@ const EditExpense = ({
     );
   };
 
-  console.log(mappingOptions)
-
   return (
     <div className={styles.card}>
       <h1>{`${expenseTransaction!.employeeName} ${

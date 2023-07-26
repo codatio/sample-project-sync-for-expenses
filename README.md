@@ -1,6 +1,6 @@
 # sample-project-sync-for-expenses
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcodatio%2Fsample-project-sync-for-expenses&env=CODAT_AUTH_HEADER,CODAT_RECEIVE_WEBHOOK_BASE_URL&envDescription=Your%20Codat%20Auth%20Header,The%20webhook%20api%20url%20for%20the%20route%20this%20is%20deployed%20at&envLink=https%3A%2F%2Fdocs.codat.io%2Freference%2Fauthentication)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcodatio%2Fsample-project-sync-for-expenses&env=CODAT_AUTH_HEADER,CODAT_RECEIVE_WEBHOOK_BASE_URL&envDescription=Your%20Codat%20Auth%20Header,The%20base%20%20url%20this%20project%20is%20deployed%20at&envLink=https%3A%2F%2Fdocs.codat.io%2Freference%2Fauthentication)
 
 Sync for Expenses is an API and a set of supporting tools. It has been built to enable corporate card and expense management platforms to provide high-quality integrations with multiple accounting platforms through a standardized API.
 
@@ -75,9 +75,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### Webhooks
 
-Unlike locally you don't need to setup anything extra to handle the webhooks. Just make sure you've set the environment variable `CODAT_RECEIVE_WEBHOOK_BASE_URL` correctly. It will be like `{your project url}/api/webhooks`.
+Unlike locally you don't need to setup anything extra to handle the webhooks. Just make sure you've set the environment variable `CODAT_RECEIVE_WEBHOOK_BASE_URL` correctly (excluding the `/api/webhooks` path).
 
-E.g. `https://sample-project-sync-for-expenses.vercel.app/api/webhooks`
+E.g. `https://sample-project-sync-for-expenses.vercel.app`
 
 ## Learn More
 
