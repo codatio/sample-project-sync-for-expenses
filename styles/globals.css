@@ -71,7 +71,7 @@ select {
 /* Styles for the submit button */
 button {
   margin-top: 10px;
-  padding: 10,16,10,16px;
+  padding: 10px 16px;
   background-color: #482DEB;
   color: #fff;
   border: none;
