@@ -12,7 +12,7 @@ interface CreateCompanyResponse {
 }
 
 function Home() {
-  const [companyId, setCompanyId ] = useState<string | undefined | null>()
+  const [companyId, setCompanyId ] = useState<string | undefined>()
   const router = useRouter();
 
   const onSubmit = async (
@@ -51,7 +51,7 @@ function Home() {
   }
 
   const closeModal = () => {
-    setCompanyId()
+    setCompanyId("")
   }
 
   return (
@@ -74,7 +74,7 @@ function Home() {
       </div>
 
       {
-        companyId
+        !!companyId
         &&
           <div className={styles.modalWrapper}>
             <CodatLink
