@@ -79,6 +79,7 @@ function Home() {
           <div className={styles.modalWrapper}>
             <CodatLink
               companyId={companyId}
+              onConnection={() => {}}
               onFinish={onCompleteAuth}
               onClose={closeModal}
               onError={closeModal}
