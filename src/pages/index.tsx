@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { CodatLink } from "./components/CodatLink";
+import { CodatLink } from "../components/CodatLink";
 
 import styles from "./styles.module.scss";
 
