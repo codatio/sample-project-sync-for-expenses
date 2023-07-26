@@ -21,6 +21,10 @@ const createCompany = async (companyName: string) => {
     name: companyName,
   });
 
+  if (response.statusCode == 402) {
+    throw new Error("Free trial limits hit. Please delete a company.");
+  }
+
   if (response.statusCode !== 200) {
     throw new Error("Failed to create company");
   }
@@ -32,6 +36,10 @@ const createPartnerExpenseConnection = async (companyId: string) => {
   const response = await expenseApi.connections.createPartnerExpenseConnection({
     companyId,
   });
+
+  if (response.statusCode == 402) {
+    throw new Error("Free trial limits hit. Please delete a connection.");
+  }
 
   if (response.statusCode !== 200) {
     throw new Error("Failed to create partner expense connection");
@@ -83,6 +91,7 @@ export default async function handler(
   const { companyName } = body;
 
   const createCompanyResult = await createCompany(companyName);
+
   await createPartnerExpenseConnection(createCompanyResult.companyId);
   await createWebhooks(createCompanyResult.companyId);
 
