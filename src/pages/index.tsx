@@ -2,6 +2,8 @@ import { FormEvent } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+import styles from "./styles.module.scss";
+
 interface CreateCompanyResponse {
   id: string;
   redirect: string;
@@ -17,6 +19,10 @@ function Home() {
     const formData = new FormData(event.currentTarget);
     const companyName = formData.get("companyName");
   
+    if (companyName == "") {
+      throw new Error("Enter a company name");
+    }
+
     const response = await fetch("/api/companies", {
       method: "POST",
       headers: {
@@ -40,19 +46,20 @@ function Home() {
   return (
     <>
       <Head>
-        <title>Sync for Expenses</title>
+        <title>starter-project-sync-for-commerce</title>
       </Head>
-      <main>
-        <div className="flex-container">
-          <h1>Create a Company</h1>
-          <form onSubmit={onSubmit}>
-            <label htmlFor="companyName">Company name</label>
-            <input type="text" id="companyName" name="companyName" />
+      <div className={styles.card}>
+        <h1 className={styles.header}>Sync a company</h1>
 
-            <button type="submit">Link my accounting package</button>
-          </form>
-        </div>
-      </main>
+        <form onSubmit={onSubmit}>
+          <div className={styles.formRow}>
+            <label htmlFor="companyName">Company name</label>
+            <input className={styles.input} type="text" id="companyName" name="companyName" />
+          </div>
+
+          <button type="submit">Authorize access</button>
+        </form>
+      </div>
     </>
   );
 }

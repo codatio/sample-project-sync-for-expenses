@@ -1,0 +1,33 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  padding: 2em;
+  background: white;
+  border: 2px solid #ededed;
+  border-radius: 4px;
+}
+
+.header {
+  margin-top: 0;
+}
+
+.formRow {
+  display: flex;
+  margin-bottom: 1em;
+  align-items: center;
+}
+
+.input {
+  margin-left: 2em;
+  padding: 0.5em;
+  min-width: 200px;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
