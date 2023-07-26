@@ -12,7 +12,7 @@ interface CreateCompanyResponse {
 }
 
 function Home() {
-  const [companyId, setCompanyId ] = useState()
+  const [companyId, setCompanyId ] = useState<string | undefined>()
   const router = useRouter();
 
   const onSubmit = async (
@@ -59,6 +59,7 @@ function Home() {
       <Head>
         <title>starter-project-sync-for-commerce</title>
       </Head>
+
       <div className={styles.card}>
         <h1 className={styles.header}>Sync a company</h1>
 
