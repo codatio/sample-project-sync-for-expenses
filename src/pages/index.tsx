@@ -12,7 +12,7 @@ interface CreateCompanyResponse {
 }
 
 function Home() {
-  const [companyId, setCompanyId ] = useState<string | undefined>()
+  const [companyId, setCompanyId ] = useState<string | undefined | null>()
   const router = useRouter();
 
   const onSubmit = async (
