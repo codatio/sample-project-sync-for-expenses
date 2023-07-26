@@ -31,3 +31,13 @@
     opacity: 0.75;
   }
 }
+
+.modalWrapper {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+}

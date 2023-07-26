@@ -1,6 +1,8 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+
+import { CodatLink } from "./components/CodatLink";
 
 import styles from "./styles.module.scss";
 
@@ -10,6 +12,7 @@ interface CreateCompanyResponse {
 }
 
 function Home() {
+  const [companyId, setCompanyId ] = useState()
   const router = useRouter();
 
   const onSubmit = async (
@@ -40,8 +43,16 @@ function Home() {
       throw new Error("Redirect URL not provided");
     }
 
-    await router.push(responseBody.redirect);
+    setCompanyId(responseBody.id)
   };
+
+  const onCompleteAuth = async () => {
+    await router.push(`/companies/${companyId}/configure`);
+  }
+
+  const closeModal = () => {
+    setCompanyId()
+  }
 
   return (
     <>
@@ -60,6 +71,19 @@ function Home() {
           <button type="submit">Authorize access</button>
         </form>
       </div>
+
+      {
+        companyId
+        &&
+          <div className={styles.modalWrapper}>
+            <CodatLink
+              companyId={companyId}
+              onFinish={onCompleteAuth}
+              onClose={closeModal}
+              onError={closeModal}
+            />
+          </div>
+      }
     </>
   );
 }

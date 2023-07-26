@@ -11,7 +11,6 @@ This sample project implements setting a company up for expense sync.
 - [Sign up](https://signup.codat.io/)!
 - Enable Sync for Expenses
 - Configure your [data type settings](https://docs.codat.io/sync-for-expenses/gettingstarted#data-types)
-- Set up a [redirect at the end of the auth flow](https://app.codat.io/settings/redirects) to `http://localhost:3000/companies/{companyId}/configure` (or replace `localhost:3000` with the appropriate URL for prod.
 - Ensure our [accounting](https://app.codat.io/settings/integrations/accounting/manage/mqjo?integrationName=Sandbox) and [commerce](https://app.codat.io/settings/integrations/commerce/manage/aiwb?integrationName=Commerce%20Sandbox) sandbox integrations are enabled. You can disable [Banking Sandbox](https://app.codat.io/settings/integrations/banking/manage/qhnd?integrationName=Banking%20Sandbox).
 
 
@@ -63,6 +62,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 ## Implementation details
 
 - We've taken care of creating new webhook rules for each company you add - instead of this, you can just create the rules once, listening for all companies.
+- We've used [Embedded Link](https://docs.codat.io/auth-flow/authorize-embedded-link) for the authorization of access to the data.
 - This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Deploying the project

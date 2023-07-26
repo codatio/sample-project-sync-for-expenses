@@ -59,7 +59,9 @@ function Configure() {
       if (id === undefined) {
         return;
       }
+
       const data = await getData(id);
+      console.log(data)
       if (data === null) {
         timeoutRef.current = window.setTimeout(() => getCompanyData(), 1000);
         return;

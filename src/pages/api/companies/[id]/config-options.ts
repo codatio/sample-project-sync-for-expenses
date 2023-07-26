@@ -53,7 +53,11 @@ export default async function handler(
   let allDataTypesFound = true;
   await Promise.all(
     allDataTypes.map(async (dataType) => {
-      if ((await completedPullOperations.get(id, dataType)) === undefined) {
+      const completedOperations = await completedPullOperations.get(id, dataType)
+      console.log(id)
+      console.log(dataType)
+      console.log(completedOperations)
+      if (completedOperations == undefined) {
         console.log(`Datatype not found: ${dataType}`);
         allDataTypesFound = false;
       }
