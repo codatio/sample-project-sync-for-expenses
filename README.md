@@ -14,9 +14,13 @@ Follow the [Sync for Expenses getting started guide](https://docs.codat.io/sync-
 
 - Copy the `.env.example` file into a `.env.local` file
 
-### 2. Open up a local tunnel
+### 2. Set your Codat auth header
 
-This demo relies on webhooks that signal whether a Sync has completed successfully, or failed. To allow Codat's webhooks to call this demo app, you'll need to open up a local tunnel. We recommend using `localtunnel`:
+- Set the `CODAT_AUTH_HEADER` to your [authorization header](https://docs.codat.io/using-the-api/authentication).
+
+### 3. Open up a local tunnel
+
+This demo relies on webhooks that signal when a sync has completed successfully (or failed). To allow Codat's webhooks to hit this demo app, you'll need to open up a local tunnel. We recommend using [localtunnel](https://theboroer.github.io/localtunnel-www/):
 
 - Run `localtunnel`
 
@@ -26,10 +30,6 @@ npx localtunnel --port 3000
 
 - Extract the URL. It should look like https://some-subdomain.loca.lt
 - Set the `CODAT_RECEIVE_WEBHOOK_BASE_URL` to this URL. The `.env.local` file will need updating with this value.
-
-### 3. Set your Codat auth header
-
-- Set the `CODAT_AUTH_HEADER` to your authorization header (this can be found in the portal)
 
 ### 4. Run the development server
 

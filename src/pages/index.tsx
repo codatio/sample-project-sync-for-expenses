@@ -40,11 +40,12 @@ function Home() {
   return (
     <>
       <Head>
-        <title>Sync for Expenses</title>
+        <title>Step 1 | Sync for Expenses starter project</title>
       </Head>
       <main>
         <div className="flex-container">
-          <h1>Create a Company</h1>
+          <h1>Create a company</h1>
+
           <form onSubmit={onSubmit}>
             <label htmlFor="companyName">Company name</label>
             <input type="text" id="companyName" name="companyName" />
