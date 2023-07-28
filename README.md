@@ -33,7 +33,11 @@ For more information, follow the [Sync for Expenses getting started guide](https
 
 - Set the `CODAT_AUTH_HEADER` to your [authorization header](https://docs.codat.io/using-the-api/authentication).
 
-### 3. Webhooks - Open up a local tunnel
+### 3. Optional - Configure MongoDB as your database
+
+- If you would prefer to use a traditional database over LowDB, set the `OPTIONAL_MONGODB_CONNECTION_STRING` to your MongoDB connection string. The connection string will need to include the database name. This is recommended if you are deploying this application.
+
+### 4. Webhooks - Open up a local tunnel
 
 This demo relies on webhooks that signal when a sync has completed successfully (or failed). To allow Codat's webhooks to hit this demo app, you'll need to open up a local tunnel. We recommend using [localtunnel](https://theboroer.github.io/localtunnel-www/):
 
@@ -46,7 +50,7 @@ npx localtunnel --port 3000
 - Extract the URL. It should look like https://some-subdomain.loca.lt
 - Set the `CODAT_RECEIVE_WEBHOOK_BASE_URL` to this URL. The `.env.local` file will need updating with this value.
 
-### 4. Run the development server
+### 5. Run the development server
 
 Install dependencies
 
@@ -69,7 +73,6 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 - We've taken care of creating new webhook rules for each company you add - instead of this, you can just create the rules once, listening for all companies.
 - We've used [Embedded Link](https://docs.codat.io/auth-flow/authorize-embedded-link) for the authorization of access to the data.
 - This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-- This sample project won't work deployed to Vercel due to it's use of `lowdb`.
 
 ## Deploying the project
 

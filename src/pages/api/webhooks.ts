@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {completedPullOperations, syncOutcomes} from './repository';
+import {repository} from './repository';
 
 interface Webhook {
   AlertId: string;
@@ -49,11 +49,11 @@ export default async function handler(
   if (webhookDataIsDataSyncCompleted(webhookPayload.Data)) {
     const dataType = webhookPayload.Data.dataType;
     console.log("storing " + dataType);
-    await completedPullOperations.add({companyId: webhookPayload.CompanyId, completedAt: new Date(), dataType});
+    await repository.completedPullOperations.add({companyId: webhookPayload.CompanyId, completedAt: new Date(), dataType});
   }
   
   if (webhookDataIsSyncWebhook(webhookPayload.Data)) {
-    await syncOutcomes.add({
+    await repository.syncOutcomes.add({
       companyId: webhookPayload.CompanyId,
       syncId: webhookPayload.Data.syncId,
       result: webhookPayload.RuleType === WebhookNames.SyncCompleted

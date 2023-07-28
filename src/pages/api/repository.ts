@@ -1,13 +1,5 @@
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { Low } from "lowdb";
-import { JSONFile } from "lowdb/node";
-import AsyncLock from "async-lock";
-
-interface Database {
-  completedPullOperations: CompletedPullOperation[];
-  syncOutcomes: SyncOutcome[];
-}
+import {repository as lowDbRepository} from './lowdbRepository'
+import {repository as mongodbRepository} from './mongodbRepository'
 
 export interface SyncOutcome {
   companyId: string;
@@ -21,39 +13,28 @@ export interface CompletedPullOperation {
   completedAt: Date;
 }
 
-const lock = new AsyncLock();
+export interface Repository {
+  get syncOutcomes(): SyncOutcomes,
+  get completedPullOperations(): CompletedPullOperations
+}
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const file = join(__dirname, "db.json");
+export interface SyncOutcomes {
+  add: (syncOutcome: SyncOutcome) => Promise<void>;
+  get: (syncId: string) => Promise<SyncOutcome | undefined>
+}
 
-const adapter = new JSONFile<Database>(file);
-const defaultData = { syncOutcomes: [], completedPullOperations: [] };
-const db = new Low(adapter, defaultData);
+export interface CompletedPullOperations {
+  add: (pullOperation: CompletedPullOperation) => Promise<void>;
+  get: (companyId: string, dataType: string) => Promise<CompletedPullOperation | undefined>
+}
 
-export const completedPullOperations = {
-  add: async (pullOperation: CompletedPullOperation) => {
-    await lock.acquire("pull-ops", async () => {
-      db.data.completedPullOperations.push(pullOperation);
-      await db.write();
-    });
-  },
-  get: async (companyId: string, dataType: string) => {
-    await db.read();
-    return db.data.completedPullOperations.find(
-      (x) => x.companyId === companyId && x.dataType === dataType
-    );
-  },
-};
+let repository: Repository;
+const mongodbConnectionString = process.env.OPTIONAL_MONGODB_CONNECTION_STRING;
 
-export const syncOutcomes = {
-  add: async (syncOutcome: SyncOutcome) => {
-    await lock.acquire("sync-outcomes", async () => {
-      db.data.syncOutcomes.push(syncOutcome);
-      await db.write();
-    });
-  },
-  get: async (syncId: string) => {
-    await db.read();
-    return db.data.syncOutcomes.find((x) => x.syncId === syncId);
-  },
-};
+if (mongodbConnectionString) {
+  repository = mongodbRepository;
+} else {
+  repository = lowDbRepository;
+}
+
+export {repository}

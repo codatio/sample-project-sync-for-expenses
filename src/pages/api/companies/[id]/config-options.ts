@@ -3,7 +3,7 @@ import { DataTypeNames } from "../../webhooks";
 import { CodatAccounting } from "@codat/accounting";
 import { CodatCommon } from "@codat/common";
 import { SourceType } from "@codat/common/dist/sdk/models/shared";
-import { completedPullOperations } from "../../repository";
+import { repository } from "../../repository";
 import {
   CustomerStatus,
   SupplierStatus,
@@ -53,7 +53,7 @@ export default async function handler(
   let allDataTypesFound = true;
   await Promise.all(
     allDataTypes.map(async (dataType) => {
-      const completedOperations = await completedPullOperations.get(id, dataType)
+      const completedOperations = await repository.completedPullOperations.get(id, dataType)
       console.log(id)
       console.log(dataType)
       console.log(completedOperations)

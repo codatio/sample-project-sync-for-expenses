@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { syncOutcomes } from "../../../repository";
+import { repository } from "../../../repository";
 import { CodatSyncExpenses } from "@codat/sync-for-expenses";
 
 const syncForExpensesApi = new CodatSyncExpenses({
@@ -32,7 +32,7 @@ export default async function handler(
     return;
   }
 
-  const outcome = await syncOutcomes.get(syncId);
+  const outcome = await repository.syncOutcomes.get(syncId);
   if (outcome === undefined) {
     console.log("Sync not complete");
     res.status(404).end();
