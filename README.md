@@ -1,8 +1,8 @@
 # sample-project-sync-for-expenses
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcodatio%2Fsample-project-sync-for-expenses&env=CODAT_AUTH_HEADER,CODAT_RECEIVE_WEBHOOK_BASE_URL&envDescription=Your%20Codat%20Auth%20Header,The%20base%20%20url%20this%20project%20is%20deployed%20at&envLink=https%3A%2F%2Fdocs.codat.io%2Freference%2Fauthentication)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcodatio%2Fsample-project-sync-for-expenses&env=CODAT_AUTH_HEADER,CODAT_RECEIVE_WEBHOOK_BASE_URL,OPTIONAL_MONGODB_CONNECTION_STRING&envDescription=Your%20Codat%20Auth%20Header,The%20base%20%20url%20this%20project%20is%20deployed%20at,Optionally%20add%20this%20to%20use%20MongoDB&envLink=https%3A%2F%2Fdocs.codat.io%2Freference%2Fauthentication)
 
-Note: *This sample project won't work deployed to Vercel due to it's use of `lowdb`.*
+Note: *This sample project won't work deployed to Vercel without the `OPTIONAL_MONGODB_CONNECTION_STRING` set. It will fallback to `lowdb`, which only works locally.*
 
 ---
 
@@ -73,6 +73,9 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 - We've taken care of creating new webhook rules for each company you add - instead of this, you can just create the rules once, listening for all companies.
 - We've used [Embedded Link](https://docs.codat.io/auth-flow/authorize-embedded-link) for the authorization of access to the data.
 - This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- We've implemented two approaches to storage:
+  - For local development, `lowdb` with act as a lightweight database.
+  - For deployment, we've implemented [MongoDB Atlas](https://www.mongodb.com/atlas/database). Set `OPTIONAL_MONGODB_CONNECTION_STRING` and the code will use this functionality.
 
 ## Deploying the project
 
