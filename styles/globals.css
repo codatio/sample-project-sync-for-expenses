@@ -83,7 +83,7 @@ select {
 }
 
 /* Styles for the submit button */
-button {
+button[type=submit] {
   padding: 0.5em 1em;
   background-color: #482DEB;
   color: #fff;
@@ -92,10 +92,10 @@ button {
   border-radius: 4px;
 }
 
-button:not(:first-child) {
+button[type=submit]:not(:first-child) {
   margin-top: 1em;
 }
 
-button:hover {
+button[type=submit]:hover {
   background-color: #2F1BA6;
 }
