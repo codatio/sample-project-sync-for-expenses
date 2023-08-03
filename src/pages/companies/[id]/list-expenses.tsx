@@ -16,6 +16,7 @@ const ListExpenses = ({
 }) => {
   const router = useRouter();
   const companyId = router.query.id as string;
+  const [disabled, setDisabled] = useState(false);
 
   const onClick = async (
     event: React.MouseEvent,
@@ -23,6 +24,7 @@ const ListExpenses = ({
     expenseId: string
   ) => {
     event.preventDefault();
+    setDisabled(true);
     await router.push(
       "/companies/[id]/expenses/[expenseId]/edit-expense",
       `/companies/${companyId}/expenses/${expenseId}/edit-expense`
@@ -30,8 +32,8 @@ const ListExpenses = ({
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+    event.preventDefault();   
+    setDisabled(true);
     const expensesToSync: ExpenseItem[] = expenses.filter((e) => e.sync);
 
     const response = await fetch(`/api/companies/${companyId}/sync`, {
@@ -43,6 +45,7 @@ const ListExpenses = ({
     });
 
     if (response.status !== 200) {
+      setDisabled(false);
       throw new Error("Sync failed");
     }
 
@@ -117,6 +120,7 @@ const ListExpenses = ({
                   <td>
                     <button
                       onClick={(event) => onClick(event, companyId, item.id)}
+                      disabled = {disabled}
                     >
                       Edit
                     </button>
@@ -126,7 +130,7 @@ const ListExpenses = ({
             </tbody>
           </table>
         </div>
-        <button disabled={!isSyncable} type="submit">Sync</button>
+        <button disabled={!isSyncable || disabled} type="submit">Sync</button>
       </form>
     </div>
   );

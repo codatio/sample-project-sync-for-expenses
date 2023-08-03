@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, SetStateAction } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 
@@ -60,9 +60,11 @@ const EditExpense = ({
   const expenseTransaction = expenses.find(
     (transaction) => transaction.id === transactionId
   )!;
+  const [disabled, setDisabled] = useState(false);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setDisabled(true);
     const formData = new FormData(event.currentTarget);
     const trackingCategories = formData.getAll("trackingCategories");
     const taxRate = formData.get("taxRate");
@@ -168,7 +170,7 @@ const EditExpense = ({
           />
         </div>
 
-        <button type="submit">Save</button>
+        <button type="submit" disabled={disabled}>Save</button>
       </form>
     </div>
   );
