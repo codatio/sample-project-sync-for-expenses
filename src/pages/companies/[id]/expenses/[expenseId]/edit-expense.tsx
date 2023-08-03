@@ -71,7 +71,9 @@ const EditExpense = ({
 
     setExpenses((s) =>
       s.map((e) => {
-        const sync = trackingCategories.length > 0;
+        const sync = 
+          taxRate!.valueOf().toString() !== undefined
+          && account!.valueOf().toString() !== undefined;
         return e.id === transactionId
           ? {
               ...e,
