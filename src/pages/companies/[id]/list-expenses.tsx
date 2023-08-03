@@ -69,6 +69,8 @@ const ListExpenses = ({
     );
   };
 
+  const isSyncable = expenses.some(x => x.sync);
+
   return (
     <div className={styles.card}>
       <h1 className={styles.header}>Expenses</h1>
@@ -125,7 +127,7 @@ const ListExpenses = ({
             </tbody>
           </table>
         </div>
-        <button type="submit">Sync</button>
+        <button disabled={!isSyncable} type="submit">Sync</button>
       </form>
     </div>
   );
