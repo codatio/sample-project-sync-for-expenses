@@ -64,7 +64,6 @@ const ListExpenses = ({
   const canBeSynced = (expense: ExpenseItem) => {
     return (
       expense.accountId !== undefined &&
-      expense.categories.length > 0 &&
       expense.taxRateId !== undefined
     );
   };
