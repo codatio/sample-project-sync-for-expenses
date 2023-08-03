@@ -1,8 +1,10 @@
+import { ExpenseTransactionType } from "@codat/sync-for-expenses/dist/sdk/models/shared/expensetransaction";
 import { ExpenseItem } from "./expenseItem";
 
 export const dummyData: ExpenseItem[] = [
   {
     "id": "d9b04a83-1fd7-4a5e-bd7d-8433828749f4",
+    "type": ExpenseTransactionType.Payment,
     "employeeName": "John Doe",
     "description": "Office Supplies",
     "categories": [],
@@ -13,6 +15,7 @@ export const dummyData: ExpenseItem[] = [
   },
   {
     "id": "f5e8f94c-5f72-4f64-aa26-344d1fbb3aa7",
+    "type": ExpenseTransactionType.Payment,
     "employeeName": "Jane Smith",
     "description": "Business Travel",
     "categories": [],
@@ -23,6 +26,7 @@ export const dummyData: ExpenseItem[] = [
   },
   {
     "id": "c3e59033-8aa1-4f11-8f08-46f5b0da3f2c",
+    "type": ExpenseTransactionType.Payment,
     "employeeName": "Mark Johnson",
     "description": "Client Dinner",
     "categories": [],
@@ -33,6 +37,7 @@ export const dummyData: ExpenseItem[] = [
   },
   {
     "id": "9d1b4a39-5e89-47dd-8df7-02a2426658d4",
+    "type": ExpenseTransactionType.Payment,
     "employeeName": "Emily Davis",
     "description": "Marketing Campaign",
     "categories": [],
@@ -43,6 +48,7 @@ export const dummyData: ExpenseItem[] = [
   },
   {
     "id": "5d9b392a-00ed-482f-9ad4-853db90d3a4c",
+    "type": ExpenseTransactionType.Payment,
     "employeeName": "Michael Anderson",
     "description": "Equipment Purchase",
     "categories": [],
@@ -53,6 +59,7 @@ export const dummyData: ExpenseItem[] = [
   },
   {
     "id": "8c7f1a12-5835-4286-a4d2-1e37f1b26fcf",
+    "type": ExpenseTransactionType.Payment,
     "employeeName": "Sarah Thompson",
     "description": "Training Course",
     "categories": [],
@@ -60,5 +67,27 @@ export const dummyData: ExpenseItem[] = [
     "note": "Web development course",
     "netAmount": 800.0,
     "taxAmount": 160.0
+  },
+  {
+    "id": "30e81719-375d-40cc-9bd5-9b5960eeaec6",
+    "type": ExpenseTransactionType.Refund,
+    "employeeName": "Emily Williams",
+    "description": "Music Festival Ticket",
+    "categories": [],
+    "merchant": "SoundFest Productions",
+    "note": "Refund for event cancellation",
+    "netAmount": 200.0,
+    "taxAmount": 40.0
+  },
+  {
+    "id": "5813c52e-233f-4877-b574-519dc7adec06",
+    "type": ExpenseTransactionType.Refund,
+    "employeeName": "Jane Doe",
+    "description": "Conference Ticket",
+    "categories": [],
+    "merchant": "Tech Connect Conference",
+    "note": "Refund for unable to attend",
+    "netAmount": 350.0,
+    "taxAmount": 70.0
   }
 ];

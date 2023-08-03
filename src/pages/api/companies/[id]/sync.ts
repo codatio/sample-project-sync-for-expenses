@@ -35,7 +35,7 @@ export default async function handler(
           currency: "GBP",
           issueDate: "2023-05-05",
           id: x.id,
-          type: ExpenseTransactionType.Payment,
+          type: x.type,
           notes: x.note,
           merchantName: "Merchant name",
           lines: [

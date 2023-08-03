@@ -84,6 +84,7 @@ const ListExpenses = ({
             <thead>
               <tr>
                 <th>Sync?</th>
+                <th>Type</th>
                 <th>Employee name</th>
                 <th>Description</th>
                 <th>Note</th>
@@ -108,6 +109,7 @@ const ListExpenses = ({
                       disabled={!canBeSynced(item)}
                     />
                   </td>
+                  <td>{item.type}</td>
                   <td>{item.employeeName}</td>
                   <td>{item.description}</td>
                   <td>{item.note}</td>
