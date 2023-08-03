@@ -12,15 +12,15 @@ interface CreateCompanyResponse {
 }
 
 function Home() {
-  const [companyId, setCompanyId ] = useState<string | undefined>()
+  const [companyId, setCompanyId ] = useState<string | undefined>()  
   const router = useRouter();
+  const [disabled, setDisabled] = useState(false);
 
   const onSubmit = async (
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    let submitButton = document.getElementById("submit") as HTMLInputElement;
-    submitButton.disabled = true;
+    setDisabled(true);
     const formData = new FormData(event.currentTarget);
     const companyName = formData.get("companyName");
 
@@ -37,13 +37,13 @@ function Home() {
     });
 
     if (response.status !== 201) {
-      submitButton.disabled = false;
+      setDisabled(false);
       throw new Error("Failed to create company");
     }
 
     const responseBody = (await response.json()) as CreateCompanyResponse;
     if (!responseBody.redirect) {
-      submitButton.disabled = false;
+      setDisabled(false);
       throw new Error("Redirect URL not provided");
     }
 
@@ -73,7 +73,7 @@ function Home() {
             <input className={styles.input} type="text" id="companyName" name="companyName" />
           </div>
 
-          <button type="submit" id="submit">Authorize access</button>
+          <button type="submit" disabled={disabled}>Authorize access</button>
         </form>
       </div>
 

@@ -9,11 +9,11 @@ import styles from "./styles.module.scss";
 function Configure() {
   const router = useRouter();
   const id = router.query.id as string | undefined;
+  const [disabled, setDisabled] = useState(false);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let submitButton = document.getElementById("submit") as HTMLInputElement;
-    submitButton.disabled = true;
+    setDisabled(true);
     const formData = new FormData(event.currentTarget);
     const request: SaveCompanyConfigRequest = {
       supplierId: formData.get("defaultSupplier")!.toString(),
@@ -30,7 +30,7 @@ function Configure() {
     });
 
     if (response.status !== 200) {
-      submitButton.disabled = false;
+      setDisabled(false);
       throw new Error("Unable to save config");
     } else {
       await router.push('/companies/[id]/list-expenses', `/companies/${id}/list-expenses`);
@@ -129,7 +129,7 @@ function Configure() {
           </select>
         </div>
 
-        <button type="submit" id="submit">Continue</button>
+        <button type="submit" disabled={disabled}>Continue</button>
       </form>
     </div>
   );
