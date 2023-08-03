@@ -63,6 +63,8 @@ const EditExpense = ({
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    let submitButton = document.getElementById("submit") as HTMLInputElement;
+    submitButton.disabled = true;
     const formData = new FormData(event.currentTarget);
     const trackingCategories = formData.getAll("trackingCategories");
     const taxRate = formData.get("taxRate");
@@ -166,7 +168,7 @@ const EditExpense = ({
           />
         </div>
 
-        <button type="submit">Save</button>
+        <button type="submit" id="submit">Save</button>
       </form>
     </div>
   );

@@ -31,6 +31,8 @@ const ListExpenses = ({
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    let submitButton = document.getElementById("submit") as HTMLInputElement;
+    submitButton.disabled = true;
 
     const expensesToSync: ExpenseItem[] = expenses.filter((e) => e.sync);
 
@@ -43,6 +45,7 @@ const ListExpenses = ({
     });
 
     if (response.status !== 200) {
+      submitButton.disabled = false;
       throw new Error("Sync failed");
     }
 
@@ -125,7 +128,7 @@ const ListExpenses = ({
             </tbody>
           </table>
         </div>
-        <button type="submit">Sync</button>
+        <button type="submit" id="submit">Sync</button>
       </form>
     </div>
   );

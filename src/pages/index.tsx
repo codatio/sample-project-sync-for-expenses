@@ -19,9 +19,11 @@ function Home() {
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+    let submitButton = document.getElementById("submit") as HTMLInputElement;
+    submitButton.disabled = true;
     const formData = new FormData(event.currentTarget);
     const companyName = formData.get("companyName");
-  
+
     if (companyName == "") {
       throw new Error("Enter a company name");
     }
@@ -33,13 +35,15 @@ function Home() {
       },
       body: JSON.stringify({ companyName }),
     });
-  
+
     if (response.status !== 201) {
+      submitButton.disabled = false;
       throw new Error("Failed to create company");
     }
-  
+
     const responseBody = (await response.json()) as CreateCompanyResponse;
     if (!responseBody.redirect) {
+      submitButton.disabled = false;
       throw new Error("Redirect URL not provided");
     }
 
@@ -69,22 +73,22 @@ function Home() {
             <input className={styles.input} type="text" id="companyName" name="companyName" />
           </div>
 
-          <button type="submit">Authorize access</button>
+          <button type="submit" id="submit">Authorize access</button>
         </form>
       </div>
 
       {
         !!companyId
         &&
-          <div className={styles.modalWrapper}>
-            <CodatLink
-              companyId={companyId}
-              onConnection={() => {}}
-              onFinish={onCompleteAuth}
-              onClose={closeModal}
-              onError={closeModal}
-            />
-          </div>
+        <div className={styles.modalWrapper}>
+          <CodatLink
+            companyId={companyId}
+            onConnection={() => {}}
+            onFinish={onCompleteAuth}
+            onClose={closeModal}
+            onError={closeModal}
+          />
+        </div>
       }
     </>
   );
