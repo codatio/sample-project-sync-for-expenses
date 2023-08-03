@@ -1,5 +1,8 @@
+import { ExpenseTransactionType } from "@codat/sync-for-expenses/dist/sdk/models/shared/expensetransaction";
+
 export interface ExpenseItem {
   id: string;
+  type: ExpenseTransactionType;
   employeeName: string;
   description: string;
   categories: TrackingCategory[];
