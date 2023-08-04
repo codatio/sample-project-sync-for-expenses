@@ -106,7 +106,7 @@ const Result = () => {
   }, [companyId, syncId]);
 
   if (!syncResult) {
-    return <ResultCard header="Sync in progress&hellip;"></ResultCard>
+    return <ResultCard header="Sync in progress&hellip;"></ResultCard>;
   }
   if (syncResult.result === "failure") {
     return (
@@ -120,19 +120,16 @@ const Result = () => {
     );
   }
 
-  if (attachmentCount === 0) {
-    return (
-      <ResultCard header="Sync succeeded">
-        {attachmentCount > 0 && (
-          <p>Waiting for {attachmentCount} attachments to be pushed&hellip;</p>
-        )}
-        {attachmentCount === 0 &&
-          (totalAttachmentCountRef.current ?? 0) > 0 && (
-            <p>Attachments pushed.</p>
-          )}
-      </ResultCard>
-    );
-  }
+  return (
+    <ResultCard header="Sync succeeded">
+      {attachmentCount > 0 && (
+        <p>Waiting for {attachmentCount} attachments to be pushed&hellip;</p>
+      )}
+      {attachmentCount === 0 && (totalAttachmentCountRef.current ?? 0) > 0 && (
+        <p>Attachments pushed.</p>
+      )}
+    </ResultCard>
+  );
 };
 
 const ResultCard = ({
