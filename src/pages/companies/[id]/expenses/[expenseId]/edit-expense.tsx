@@ -1,4 +1,12 @@
-import { Dispatch, FormEvent, SetStateAction } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 
@@ -6,12 +14,7 @@ import { ExpenseItem } from "@/data/expenseItem";
 import { CodatSyncExpenses } from "@codat/sync-for-expenses";
 import { MappingOptions } from "@codat/sync-for-expenses/dist/sdk/models/shared";
 
-import styles from './styles.module.scss';
-
-interface SelectOption {
-  label: string;
-  value: string;
-}
+import styles from "./styles.module.scss";
 
 const syncForExpensesApi = new CodatSyncExpenses({
   security: {
@@ -61,24 +64,46 @@ const EditExpense = ({
     (transaction) => transaction.id === transactionId
   )!;
 
+  const onAttachmentRemoved = () => {
+    setExpenses((s) =>
+      s.map((expense) =>
+        expense.id === transactionId
+          ? {
+              ...expense,
+              attachment: undefined,
+            }
+          : expense
+      )
+    );
+  };
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const trackingCategories = formData.getAll("trackingCategories");
-    const taxRate = formData.get("taxRate");
-    const account = formData.get("account");
-    const attachment = formData.get("attachment");
+    const trackingCategoriesInput = formData.getAll("trackingCategories");
+    const taxRateInput = formData.get("taxRate");
+    const accountInput = formData.get("account");
+    let attachment: File | undefined = undefined;
+    if (expenseTransaction.attachment !== undefined) {
+      attachment = expenseTransaction.attachment;
+    } else {
+      const attachmentInput = formData.get("attachment") as File;
+      if (attachmentInput.size > 0) {
+        attachment = attachmentInput;
+      }
+    }
 
     setExpenses((s) =>
-      s.map((e) => {
-        const sync = trackingCategories.length > 0;
-        return e.id === transactionId
+      s.map((expense) => {
+        const sync = trackingCategoriesInput.length > 0;
+        return expense.id === transactionId
           ? {
-              ...e,
+              ...expense,
               sync,
-              accountId: account!.valueOf().toString(),
-              taxRateId: taxRate!.valueOf().toString(),
-              categories: trackingCategories.map((tc) => {
+              attachment: attachment,
+              accountId: accountInput!.valueOf().toString(),
+              taxRateId: taxRateInput!.valueOf().toString(),
+              categories: trackingCategoriesInput.map((tc) => {
                 const cat = mappingOptions.trackingCategories!.find(
                   (x) => x.id === tc!.valueOf().toString()
                 );
@@ -89,9 +114,8 @@ const EditExpense = ({
                 };
               }),
             }
-          : e
-      }
-      )
+          : expense;
+      })
     );
 
     await router.push(
@@ -99,6 +123,18 @@ const EditExpense = ({
       `/companies/${companyId}/list-expenses`
     );
   };
+
+  let selectedTrackingCategories: string[] | undefined = undefined;
+  if (
+    expenseTransaction.categories.length > 0 &&
+    mappingOptions.trackingCategories
+  ) {
+    selectedTrackingCategories = mappingOptions
+      .trackingCategories!.filter((x) =>
+        expenseTransaction.categories.some((c) => c.id === x.id)
+      )
+      .map((x) => x.id!);
+  }
 
   return (
     <div className={styles.card}>
@@ -108,17 +144,20 @@ const EditExpense = ({
 
       <form onSubmit={onSubmit}>
         <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="trackingCategories">Tracking categories</label>
-          <select multiple id="trackingCategories" name="trackingCategories" className={styles.trackingCategories}>
+          <label className={styles.inputLabel} htmlFor="trackingCategories">
+            Tracking categories
+          </label>
+          <select
+            multiple
+            id="trackingCategories"
+            name="trackingCategories"
+            className={styles.trackingCategories}
+            defaultValue={selectedTrackingCategories}
+          >
             {mappingOptions.trackingCategories!.map((category) => (
               <option
                 key={category.id!}
                 value={category.id}
-                selected={
-                  expenseTransaction.categories.find(
-                    (x) => x.id === category.id
-                  ) !== undefined
-                }
               >
                 {category.name}
               </option>
@@ -127,14 +166,16 @@ const EditExpense = ({
         </div>
 
         <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="taxRate">Tax rate</label>
-          <select id="taxRate" name="taxRate">
+          <label className={styles.inputLabel} htmlFor="taxRate">
+            Tax rate
+          </label>
+          <select
+            id="taxRate"
+            name="taxRate"
+            defaultValue={expenseTransaction.taxRateId}
+          >
             {mappingOptions.taxRates!.map((taxRate) => (
-              <option
-                key={taxRate.id}
-                value={taxRate.id}
-                selected={taxRate.id === expenseTransaction?.taxRateId}
-              >
+              <option key={taxRate.id} value={taxRate.id}>
                 {taxRate.name}
               </option>
             ))}
@@ -142,14 +183,16 @@ const EditExpense = ({
         </div>
 
         <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="account">Account</label>
-          <select id="account" name="account">
+          <label className={styles.inputLabel} htmlFor="account">
+            Account
+          </label>
+          <select
+            id="account"
+            name="account"
+            defaultValue={expenseTransaction.accountId}
+          >
             {mappingOptions.accounts!.map((account) => (
-              <option
-                key={account.id}
-                value={account.id}
-                selected={account.id === expenseTransaction.accountId}
-              >
+              <option key={account.id} value={account.id}>
                 {`${account.name} (${account.accountType})`}
               </option>
             ))}
@@ -157,13 +200,21 @@ const EditExpense = ({
         </div>
 
         <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="attachment">Upload an attachment</label>
-          <input
-            type="file"
-            id="attachment"
-            name="attachment"
-            disabled={true}
-          />
+          <label className={styles.inputLabel} htmlFor="attachment">
+            Upload an attachment
+          </label>
+
+          {expenseTransaction.attachment === undefined && (
+            <input type="file" id="attachment" name="attachment" />
+          )}
+          {expenseTransaction.attachment !== undefined && (
+            <div>
+              {expenseTransaction.attachment!.name}
+              <span onClick={onAttachmentRemoved} style={{ cursor: "pointer" }}>
+                &nbsp;❌
+              </span>
+            </div>
+          )}
         </div>
 
         <button type="submit">Save</button>

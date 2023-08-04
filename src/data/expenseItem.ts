@@ -9,7 +9,8 @@ export interface ExpenseItem {
   note: string;
   netAmount: number;
   taxAmount: number;
-  sync?: boolean
+  sync?: boolean;
+  attachment?: File;
 }
 
 export interface TrackingCategory {
