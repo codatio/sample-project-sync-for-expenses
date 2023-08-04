@@ -22,6 +22,7 @@ const ListExpenses = ({
 }) => {
   const router = useRouter();
   const companyId = router.query.id as string;
+  const [disabled, setDisabled] = useState(false);
 
   const onClick = async (
     event: React.MouseEvent,
@@ -29,6 +30,7 @@ const ListExpenses = ({
     expenseId: string
   ) => {
     event.preventDefault();
+    setDisabled(true);
     await router.push(
       "/companies/[id]/expenses/[expenseId]/edit-expense",
       `/companies/${companyId}/expenses/${expenseId}/edit-expense`
@@ -68,8 +70,8 @@ const ListExpenses = ({
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+    event.preventDefault();   
+    setDisabled(true);
     const expensesToSync: ExpenseItem[] = expenses.filter((e) => e.sync);
 
     if (expensesToSync.some((x) => x.attachment !== undefined)) {
@@ -87,6 +89,7 @@ const ListExpenses = ({
     });
 
     if (response.status !== 200) {
+      setDisabled(false);
       throw new Error("Sync failed");
     }
 
@@ -111,10 +114,11 @@ const ListExpenses = ({
   const canBeSynced = (expense: ExpenseItem) => {
     return (
       expense.accountId !== undefined &&
-      expense.categories.length > 0 &&
       expense.taxRateId !== undefined
     );
   };
+
+  const isSyncable = expenses.some(x => x.sync);
 
   return (
     <div className={styles.card}>
@@ -126,6 +130,7 @@ const ListExpenses = ({
             <thead>
               <tr>
                 <th>Sync?</th>
+                <th>Type</th>
                 <th>Employee name</th>
                 <th>Description</th>
                 <th>Note</th>
@@ -150,6 +155,7 @@ const ListExpenses = ({
                       disabled={!canBeSynced(item)}
                     />
                   </td>
+                  <td>{item.type}</td>
                   <td>{item.employeeName}</td>
                   <td>{item.description}</td>
                   <td>{item.note}</td>
@@ -164,6 +170,7 @@ const ListExpenses = ({
                   <td>
                     <button
                       onClick={(event) => onClick(event, companyId, item.id)}
+                      disabled = {disabled}
                     >
                       Edit
                     </button>
@@ -173,7 +180,7 @@ const ListExpenses = ({
             </tbody>
           </table>
         </div>
-        <button type="submit">Sync</button>
+        <button disabled={!isSyncable || disabled} type="submit">Sync</button>
       </form>
     </div>
   );

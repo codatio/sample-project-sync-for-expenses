@@ -42,7 +42,7 @@ export default async function handler(
           currency: "GBP",
           issueDate: formattedDate,
           id: x.id,
-          type: ExpenseTransactionType.Payment,
+          type: x.type,
           notes: x.note,
           merchantName: "Merchant name",
           lines: [

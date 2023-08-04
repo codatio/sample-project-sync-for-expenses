@@ -99,3 +99,7 @@ button[type=submit]:not(:first-child) {
 button[type=submit]:hover {
   background-color: #2F1BA6;
 }
+
+button[type=submit]:disabled {
+  background-color: #BBCADD;
+}

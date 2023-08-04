@@ -1,12 +1,4 @@
-import {
-  ChangeEvent,
-  ChangeEventHandler,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 
@@ -63,6 +55,7 @@ const EditExpense = ({
   const expenseTransaction = expenses.find(
     (transaction) => transaction.id === transactionId
   )!;
+  const [disabled, setDisabled] = useState(false);
 
   const onAttachmentRemoved = () => {
     setExpenses((s) =>
@@ -79,6 +72,7 @@ const EditExpense = ({
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setDisabled(true);
     const formData = new FormData(event.currentTarget);
     const trackingCategoriesInput = formData.getAll("trackingCategories");
     const taxRateInput = formData.get("taxRate");
@@ -95,7 +89,9 @@ const EditExpense = ({
 
     setExpenses((s) =>
       s.map((expense) => {
-        const sync = trackingCategoriesInput.length > 0;
+        const sync =
+          taxRateInput!.valueOf().toString() !== undefined &&
+          accountInput!.valueOf().toString() !== undefined;
         return expense.id === transactionId
           ? {
               ...expense,
@@ -155,10 +151,7 @@ const EditExpense = ({
             defaultValue={selectedTrackingCategories}
           >
             {mappingOptions.trackingCategories!.map((category) => (
-              <option
-                key={category.id!}
-                value={category.id}
-              >
+              <option key={category.id!} value={category.id}>
                 {category.name}
               </option>
             ))}
@@ -217,7 +210,9 @@ const EditExpense = ({
           )}
         </div>
 
-        <button type="submit">Save</button>
+        <button type="submit" disabled={disabled}>
+          Save
+        </button>
       </form>
     </div>
   );
