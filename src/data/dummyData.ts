@@ -11,18 +11,18 @@ export const dummyData: ExpenseItem[] = [
     "merchant": "Office Mart",
     "note": "Pens, paper, and stapler",
     "netAmount": 50.0,
-    "taxAmount": 10.0
+    "taxAmount": 10.0,
   },
   {
     "id": "f5e8f94c-5f72-4f64-aa26-344d1fbb3aa7",
     "type": ExpenseTransactionType.Payment,
     "employeeName": "Jane Smith",
-    "description": "Business Travel",
+    "description": "Tech book",
     "categories": [],
-    "merchant": "Airline Tickets",
-    "note": "Flight to New York",
-    "netAmount": 500.0,
-    "taxAmount": 100.0
+    "merchant": "Amazon",
+    "note": "Learning material",
+    "netAmount": 17.54,
+    "taxAmount": 0,
   },
   {
     "id": "c3e59033-8aa1-4f11-8f08-46f5b0da3f2c",
@@ -33,7 +33,7 @@ export const dummyData: ExpenseItem[] = [
     "merchant": "Fine Dining Restaurant",
     "note": "Dinner with important client",
     "netAmount": 150.0,
-    "taxAmount": 30.0
+    "taxAmount": 30.0,
   },
   {
     "id": "9d1b4a39-5e89-47dd-8df7-02a2426658d4",
@@ -44,7 +44,7 @@ export const dummyData: ExpenseItem[] = [
     "merchant": "Advertising Agency",
     "note": "Promotional materials and ads",
     "netAmount": 1000.0,
-    "taxAmount": 200.0
+    "taxAmount": 200.0,
   },
   {
     "id": "5d9b392a-00ed-482f-9ad4-853db90d3a4c",
@@ -55,7 +55,7 @@ export const dummyData: ExpenseItem[] = [
     "merchant": "Computer Store",
     "note": "New laptop and accessories",
     "netAmount": 2000.0,
-    "taxAmount": 400.0
+    "taxAmount": 400.0,
   },
   {
     "id": "8c7f1a12-5835-4286-a4d2-1e37f1b26fcf",
@@ -66,7 +66,7 @@ export const dummyData: ExpenseItem[] = [
     "merchant": "Online Course Provider",
     "note": "Web development course",
     "netAmount": 800.0,
-    "taxAmount": 160.0
+    "taxAmount": 160.0,
   },
   {
     "id": "30e81719-375d-40cc-9bd5-9b5960eeaec6",
