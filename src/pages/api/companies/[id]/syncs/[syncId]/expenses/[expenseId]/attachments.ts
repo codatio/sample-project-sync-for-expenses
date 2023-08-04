@@ -10,43 +10,40 @@ export const config = {
   },
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { syncId, id: companyId, expenseId } = req.query;
-  if (req.method === "POST") {
-    const form = new IncomingForm({
-      keepExtensions: true,
-    });
+  if (req.method !== "POST") {
+    res.status(405).end();
+    return;
+  }
+  const form = new IncomingForm({
+    keepExtensions: true,
+  });
 
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        res.status(400).json({ error: "Invalid request" });
-        return;
+  try {
+    const [, files] = await form.parse(req);
+    const filesByName = files[Object.keys(files)[0]] as formidable.File[];
+    const formData = new FormData();
+    formData.append("file", fs.createReadStream(filesByName[0].filepath));
+
+    await axios.post(
+      `https://api.codat.io/companies/${companyId}/sync/expenses/syncs/${syncId}/transactions/${expenseId}/attachments`,
+      formData,
+      {
+        headers: {
+          Authorization: process.env.CODAT_AUTH_HEADER,
+          ...formData.getHeaders(),
+        },
       }
+    );
 
-      const uploadedFiles = files[Object.keys(files)[0]] as formidable.File[];
-      const formData = new FormData();
-      formData.append("file", fs.createReadStream(uploadedFiles[0].filepath));
-
-      try {
-        await axios.post(
-          `https://api.codat.io/companies/${companyId}/sync/expenses/syncs/${syncId}/transactions/${expenseId}/attachments`,
-          formData,
-          {
-            headers: {
-              Authorization: process.env.CODAT_AUTH_HEADER,
-              ...formData.getHeaders(),
-            },
-          }
-        );
-
-        res.status(200).end();
-        return;
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error uploading file" });
-      }
-    });
-  } else {
-    res.status(405).json({ error: "Method not allowed" });
+    res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Invalid request" });
+    return;
   }
 }
