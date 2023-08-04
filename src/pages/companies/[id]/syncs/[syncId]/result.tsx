@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { GetSyncResponse } from "@/pages/api/companies/[id]/syncs/[syncId]";
@@ -108,36 +106,47 @@ const Result = () => {
   }, [companyId, syncId]);
 
   if (!syncResult) {
-    return <div>Waiting for Sync...</div>;
+    return <ResultCard header="Sync in progress&hellip;"></ResultCard>
   }
   if (syncResult.result === "failure") {
     return (
-      <div className={styles.card}>
-        <h1 className={styles.header}>Sync failed</h1>
-
+      <ResultCard header="Sync failed">
         <p>
           <div>
             <b>Error:</b> {syncResult.errorMessage}
           </div>
         </p>
-      </div>
+      </ResultCard>
     );
   }
-  return (
-    <div className={styles.card}>
-      {attachmentCount === 0 && (
-        <h1 className={styles.header}>Sync succeeded</h1>
-      )}
 
-      {attachmentCount > 0 && (
-        <p>Waiting for {attachmentCount} attachments to be pushed&hellip;</p>
-      )}
-
-      {attachmentCount === 0 && (totalAttachmentCountRef.current ?? 0) > 0 && (
-        <p>Attachments pushed.</p>
-      )}
-    </div>
-  );
+  if (attachmentCount === 0) {
+    return (
+      <ResultCard header="Sync succeeded">
+        {attachmentCount > 0 && (
+          <p>Waiting for {attachmentCount} attachments to be pushed&hellip;</p>
+        )}
+        {attachmentCount === 0 &&
+          (totalAttachmentCountRef.current ?? 0) > 0 && (
+            <p>Attachments pushed.</p>
+          )}
+      </ResultCard>
+    );
+  }
 };
+
+const ResultCard = ({
+  header,
+  children,
+}: {
+  header: string;
+  children?: React.ReactNode;
+}) => (
+  <div className={styles.card}>
+    <h1 className={styles.header}>{header}</h1>
+
+    {children}
+  </div>
+);
 
 export default Result;
