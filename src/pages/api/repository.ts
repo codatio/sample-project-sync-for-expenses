@@ -1,15 +1,21 @@
 import {repository as lowDbRepository} from './lowdbRepository'
 import {repository as mongodbRepository} from './mongodbRepository'
 
-export interface SyncOutcome {
+export interface SyncOutcomeDocument {
   companyId: string;
   syncId: string;
   result: "success" | "failure";
+  createdAt: Date;
+}
+
+export interface CompletedPullOperationDocument {
+  companyId: string;
+  operations: CompletedPullOperation[];
+  createdAt: Date;
 }
 
 export interface CompletedPullOperation {
-  companyId: string;
-  dataType: string;
+dataType: string;
   completedAt: Date;
 }
 
@@ -19,13 +25,13 @@ export interface Repository {
 }
 
 export interface SyncOutcomes {
-  add: (syncOutcome: SyncOutcome) => Promise<void>;
-  get: (syncId: string) => Promise<SyncOutcome | undefined>
+  add: (syncOutcome: SyncOutcomeDocument) => Promise<void>;
+  get: (syncId: string) => Promise<SyncOutcomeDocument | undefined>
 }
 
 export interface CompletedPullOperations {
-  add: (pullOperation: CompletedPullOperation) => Promise<void>;
-  get: (companyId: string, dataType: string) => Promise<CompletedPullOperation | undefined>
+  add: (companyId: string, pullOperation: CompletedPullOperation) => Promise<void>;
+  get: (companyId: string) => Promise<CompletedPullOperationDocument | undefined>
 }
 
 let repository: Repository;

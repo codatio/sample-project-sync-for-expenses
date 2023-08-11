@@ -12,13 +12,11 @@ interface CreateCompanyResponse {
 }
 
 function Home() {
-  const [companyId, setCompanyId ] = useState<string | undefined>()  
+  const [companyId, setCompanyId] = useState<string | undefined>();
   const router = useRouter();
   const [disabled, setDisabled] = useState(false);
 
-  const onSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setDisabled(true);
     const formData = new FormData(event.currentTarget);
@@ -47,16 +45,16 @@ function Home() {
       throw new Error("Redirect URL not provided");
     }
 
-    setCompanyId(responseBody.id)
+    setCompanyId(responseBody.id);
   };
 
   const onCompleteAuth = async () => {
     await router.push(`/companies/${companyId}/configure`);
-  }
+  };
 
   const closeModal = () => {
-    setCompanyId("")
-  }
+    setCompanyId("");
+  };
 
   return (
     <>
@@ -70,16 +68,25 @@ function Home() {
         <form onSubmit={onSubmit}>
           <div className={styles.formRow}>
             <label htmlFor="companyName">Company name</label>
-            <input className={styles.input} type="text" id="companyName" name="companyName" />
+            <input
+              className={styles.input}
+              type="text"
+              id="companyName"
+              name="companyName"
+            />
+          </div>
+          <div className={styles.textError}>
+            ** do <span className={styles.strong}>not</span> connect your production accounting
+            platform **
           </div>
 
-          <button type="submit" disabled={disabled}>Authorize access</button>
+          <button type="submit" disabled={disabled}>
+            Authorize access
+          </button>
         </form>
       </div>
 
-      {
-        !!companyId
-        &&
+      {!!companyId && (
         <div className={styles.modalWrapper}>
           <CodatLink
             companyId={companyId}
@@ -89,7 +96,7 @@ function Home() {
             onError={closeModal}
           />
         </div>
-      }
+      )}
     </>
   );
 }
