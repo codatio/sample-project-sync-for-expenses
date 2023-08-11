@@ -1,9 +1,10 @@
-import { Db, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import {
   CompletedPullOperation,
+  CompletedPullOperationDocument,
   CompletedPullOperations,
   Repository,
-  SyncOutcome,
+  SyncOutcomeDocument,
   SyncOutcomes,
 } from "./repository";
 
@@ -14,32 +15,51 @@ const startDb = async () => {
 
   const client = new MongoClient(connectionString);
   await client.connect();
-  return client.db();
+
+  const db = client.db();
+
+  await db.collection("completedPullOperations").createIndex(
+    { createdAt: 1 },
+    { expireAfterSeconds: 86400 }
+  );
+
+  await db.collection("syncOutcomes").createIndex(
+    { createdAt: 1 },
+    { expireAfterSeconds: 86400 }
+  );
+
+  return db;
 };
 
 const db = await startDb();
 
 const completedPullOperations: CompletedPullOperations = {
-  add: async (pullOperation: CompletedPullOperation) => {
+  add: async (companyId: string, pullOperation: CompletedPullOperation) => {
     if (db === undefined) throw new Error("mongodb database not initialised");
 
     const collection = db.collection("completedPullOperations");
+
     await collection.updateOne(
-      { companyId: pullOperation.companyId, dataType: pullOperation.dataType },
-      { $set: pullOperation },
+      { companyId: companyId },
+      {
+        $push: { operations: pullOperation },
+        $setOnInsert: { companyId: companyId, createdAt: new Date() },
+      },
       { upsert: true }
     );
   },
-  get: async (companyId: string, dataType: string) => {
+  get: async (companyId: string) => {
     if (db === undefined) throw new Error("mongodb database not initialised");
-    const collection = db.collection<CompletedPullOperation>("completedPullOperations");
-    return await collection.findOne({ companyId, dataType }) || undefined;
+    const collection = db.collection<CompletedPullOperationDocument>("completedPullOperations");
+    const doc = await collection.findOne({ companyId });
+    return doc || undefined;
   },
 };
 
 const syncOutcomes: SyncOutcomes = {
-  add: async (syncOutcome: SyncOutcome) => {
+  add: async (syncOutcome: SyncOutcomeDocument) => {
     if (db === undefined) throw new Error("mongodb database not initialised");
+
     const collection = db.collection("syncOutcomes");
     await collection.updateOne(
       { syncId: syncOutcome.syncId },
@@ -49,7 +69,7 @@ const syncOutcomes: SyncOutcomes = {
   },
   get: async (syncId: string) => {
     if (db === undefined) throw new Error("mongodb database not initialised");
-    const collection = db.collection<SyncOutcome>("syncOutcomes");
+    const collection = db.collection<SyncOutcomeDocument>("syncOutcomes");
     return await collection.findOne({ syncId }) || undefined;
   },
 };
