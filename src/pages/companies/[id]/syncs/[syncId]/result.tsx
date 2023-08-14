@@ -4,11 +4,7 @@ import { useRouter } from "next/router";
 import { GetSyncResponse } from "@/pages/api/companies/[id]/syncs/[syncId]";
 
 import styles from "./styles.module.scss";
-import useAttachments from "./useAttachments";
-
-interface SyncResult {
-  succeeded: boolean;
-}
+import useAttachments from "@/hooks/useAttachments";
 
 const getSyncData = async (companyId: string, syncId: string) => {
   const response = await fetch(`/api/companies/${companyId}/syncs/${syncId}`, {
