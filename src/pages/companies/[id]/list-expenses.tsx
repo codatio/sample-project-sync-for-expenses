@@ -13,7 +13,7 @@ import { ExpenseItem } from "@/data/expenseItem";
 
 import styles from "./styles.module.scss";
 
-const ExpensesTable = (expenses, processing=false) => {
+const ExpensesTable = ({expenses, processing=false}) => {
   return (
     <div className={styles.tableContainer}>
       <table>
