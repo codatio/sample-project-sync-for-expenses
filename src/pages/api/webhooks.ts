@@ -58,7 +58,8 @@ export default async function handler(
       syncId: webhookPayload.Data.syncId,
       result: webhookPayload.RuleType === WebhookNames.SyncCompleted
       ? "success"
-      : "failure"
+      : "failure",
+      createdAt: new Date(),
     })
   }
 

@@ -1,4 +1,10 @@
-import React, { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 import Decimal from "decimal.js";
 import { useRouter } from "next/router";
@@ -31,10 +37,48 @@ const ListExpenses = ({
     );
   };
 
+  const persistAttachmentsToBrowser = (expenses: ExpenseItem[]) => {
+    return new Promise<void>((resolve, reject) => {
+      const request = indexedDB.open("expenseDb", 1);
+
+      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+        const db: IDBDatabase = (event.target as IDBOpenDBRequest).result;
+        db.createObjectStore("attachments");
+      };
+
+      request.onsuccess = (event: Event) => {
+        const db: IDBDatabase = (event.target as IDBOpenDBRequest).result;
+        const transaction = db.transaction("attachments", "readwrite");
+        const attachmentsStore = transaction.objectStore("attachments");
+
+        for (const expense of expenses) {
+          if (expense.attachment === undefined) continue;
+
+          attachmentsStore.put({ file: expense.attachment }, expense.id);
+        }
+
+        transaction.oncomplete = () => {
+          resolve();
+          console.log("Transaction completed: database modification finished.");
+        };
+
+        transaction.onerror = (event) => {
+          reject("An error occurred when uploading. Please try again");
+        };
+      };
+    });
+  };
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();   
     setDisabled(true);
     const expensesToSync: ExpenseItem[] = expenses.filter((e) => e.sync);
+
+    if (expensesToSync.some((x) => x.attachment !== undefined)) {
+      await persistAttachmentsToBrowser(
+        expensesToSync.filter((x) => x.attachment !== undefined)
+      );
+    }
 
     const response = await fetch(`/api/companies/${companyId}/sync`, {
       method: "POST",
@@ -51,7 +95,10 @@ const ListExpenses = ({
 
     const syncId = (await response.json()).syncId as string;
 
-    await router.push("/companies/[id]/syncs/[syncId]/result", `/companies/${companyId}/syncs/${syncId}/result`);
+    await router.push(
+      "/companies/[id]/syncs/[syncId]/result",
+      `/companies/${companyId}/syncs/${syncId}/result`
+    );
   };
 
   const onSetItemToSync = (index: number) => {
@@ -83,6 +130,7 @@ const ListExpenses = ({
             <thead>
               <tr>
                 <th>Sync?</th>
+                <th>Type</th>
                 <th>Employee name</th>
                 <th>Description</th>
                 <th>Note</th>
@@ -107,6 +155,7 @@ const ListExpenses = ({
                       disabled={!canBeSynced(item)}
                     />
                   </td>
+                  <td>{item.type}</td>
                   <td>{item.employeeName}</td>
                   <td>{item.description}</td>
                   <td>{item.note}</td>
@@ -115,7 +164,8 @@ const ListExpenses = ({
                     {Decimal.add(item.netAmount, item.taxAmount).toNumber()}
                   </td>
                   <td>
-                    ❌
+                    {item.attachment === undefined && <>❌</>}
+                    {item.attachment !== undefined && <>✔️</>}
                   </td>
                   <td>
                     <button

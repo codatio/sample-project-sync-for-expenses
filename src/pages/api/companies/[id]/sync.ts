@@ -27,15 +27,22 @@ export default async function handler(
     return;
   }
 
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // Months are 0-based, so +1 is needed
+  const day = today.getDate();
+
+  const formattedDate = `${year}-${month}-${day}`;
+
   const request: CreateExpenseDatasetRequest = {
     companyId,
     createExpenseRequest: {
       items: body.map((x) => {
         return {
           currency: "GBP",
-          issueDate: "2023-05-05",
+          issueDate: formattedDate,
           id: x.id,
-          type: ExpenseTransactionType.Payment,
+          type: x.type,
           notes: x.note,
           merchantName: "Merchant name",
           lines: [
@@ -52,7 +59,7 @@ export default async function handler(
     },
   };
 
-  console.log(request.createExpenseRequest?.items?.map(x => x.lines));
+  console.log(request.createExpenseRequest?.items?.map((x) => x.lines));
 
   const result = await syncForExpensesApi.expenses.createExpenseDataset(
     request

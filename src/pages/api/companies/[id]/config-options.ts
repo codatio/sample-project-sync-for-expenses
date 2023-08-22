@@ -50,22 +50,19 @@ export default async function handler(
     DataTypeNames.Suppliers,
   ];
 
-  let allDataTypesFound = true;
-  await Promise.all(
-    allDataTypes.map(async (dataType) => {
-      const completedOperations = await repository.completedPullOperations.get(id, dataType)
-      console.log(id)
-      console.log(dataType)
-      console.log(completedOperations)
-      if (completedOperations == undefined) {
-        console.log(`Datatype not found: ${dataType}`);
-        allDataTypesFound = false;
-      }
-    })
-  );
-  if (!allDataTypesFound) {
+  const completedOperations = await repository.completedPullOperations.get(id);
+
+  if (completedOperations === undefined) {
     res.status(404).end();
     return;
+  }
+
+  for (const dataType of allDataTypes) {
+    if (!completedOperations.operations.some((x) => x.dataType === dataType)) {
+      console.log(`${dataType} not found`);
+      res.status(404).end();
+      return;
+    }
   }
 
   const connectionsResponse = await codatApi.connections.list({
