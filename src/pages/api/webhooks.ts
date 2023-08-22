@@ -25,20 +25,20 @@ interface DataSyncCompletedWebhookData {
 }
 
 function webhookDataIsSyncWebhook(
-  data: SyncWebhookData | DataSyncCompletedWebhookData
+    data: SyncWebhookData | DataSyncCompletedWebhookData
 ): data is SyncWebhookData {
   return (data as SyncWebhookData)?.syncId !== undefined;
 }
 
 function webhookDataIsDataSyncCompleted(
-  data: SyncWebhookData | DataSyncCompletedWebhookData
+    data: SyncWebhookData | DataSyncCompletedWebhookData
 ): data is DataSyncCompletedWebhookData {
   return (data as DataSyncCompletedWebhookData)?.datasetId !== undefined;
 }
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 ) {
   const { method, body } = req;
 
@@ -60,9 +60,9 @@ export default async function handler(
       companyId: webhookPayload.CompanyId,
       syncId: webhookPayload.Data.syncId,
       result:
-        webhookPayload.RuleType === WebhookNames.SyncCompleted
-          ? "success"
-          : "failure",
+          webhookPayload.RuleType === WebhookNames.SyncCompleted
+              ? "success"
+              : "failure",
       createdAt: new Date(),
     });
   }
@@ -80,4 +80,5 @@ export enum DataTypeNames {
   Customers = "customers",
   Suppliers = "suppliers",
   BankAccounts = "bankAccounts",
+  Accounts = "chartOfAccounts"
 }
