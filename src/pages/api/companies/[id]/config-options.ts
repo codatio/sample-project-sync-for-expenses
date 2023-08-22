@@ -45,7 +45,7 @@ export default async function handler(
   }
 
   const allDataTypes = [
-    DataTypeNames.BankAccounts,
+    DataTypeNames.Accounts,
     DataTypeNames.Customers,
     DataTypeNames.Suppliers,
   ];
@@ -79,9 +79,9 @@ export default async function handler(
   }
 
   const company = await codatApi.companies.get({ companyId: id });
-  const bankAccountResponse = await accountingApi.bankAccounts.list({
+
+  const bankAccountResponse = await accountingApi.accounts.list({
     companyId: id,
-    connectionId: accountingConnection.id,
   });
 
   const suppliersResponse = await accountingApi.suppliers.list({
@@ -94,10 +94,12 @@ export default async function handler(
 
   res.status(200).json({
     bankAccounts:
-      bankAccountResponse.bankAccounts?.results?.map((acc) => ({
-        label: `(${acc.currency})${acc.accountName} ${acc.balance}`,
-        value: acc.id,
-      })) || [],
+        (bankAccountResponse.accounts?.results || [])
+            .filter((acc) => acc.isBankAccount === true)
+            .map((acc) => ({
+              label: `(${acc.currency})${acc.name}`,
+              value: acc.id,
+            })),
     companyName: company.company!.name,
     customers:
       customersResponse.customers?.results

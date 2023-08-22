@@ -75,4 +75,5 @@ export enum DataTypeNames {
   Customers = "customers",
   Suppliers = "suppliers",
   BankAccounts = "bankAccounts",
+  Accounts = "chartOfAccounts"
 }
