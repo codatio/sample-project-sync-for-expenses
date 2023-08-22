@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {repository} from './repository';
+import { repository } from "./repository";
 
 interface Webhook {
   AlertId: string;
@@ -25,20 +25,20 @@ interface DataSyncCompletedWebhookData {
 }
 
 function webhookDataIsSyncWebhook(
-  data: SyncWebhookData | DataSyncCompletedWebhookData
+    data: SyncWebhookData | DataSyncCompletedWebhookData
 ): data is SyncWebhookData {
   return (data as SyncWebhookData)?.syncId !== undefined;
 }
 
 function webhookDataIsDataSyncCompleted(
-  data: SyncWebhookData | DataSyncCompletedWebhookData
+    data: SyncWebhookData | DataSyncCompletedWebhookData
 ): data is DataSyncCompletedWebhookData {
   return (data as DataSyncCompletedWebhookData)?.datasetId !== undefined;
 }
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 ) {
   const { method, body } = req;
 
@@ -49,18 +49,22 @@ export default async function handler(
   if (webhookDataIsDataSyncCompleted(webhookPayload.Data)) {
     const dataType = webhookPayload.Data.dataType;
     console.log("storing " + dataType);
-    await repository.completedPullOperations.add({companyId: webhookPayload.CompanyId, completedAt: new Date(), dataType});
+    await repository.completedPullOperations.add(webhookPayload.CompanyId, {
+      completedAt: new Date(),
+      dataType,
+    });
   }
-  
+
   if (webhookDataIsSyncWebhook(webhookPayload.Data)) {
     await repository.syncOutcomes.add({
       companyId: webhookPayload.CompanyId,
       syncId: webhookPayload.Data.syncId,
-      result: webhookPayload.RuleType === WebhookNames.SyncCompleted
-      ? "success"
-      : "failure",
+      result:
+          webhookPayload.RuleType === WebhookNames.SyncCompleted
+              ? "success"
+              : "failure",
       createdAt: new Date(),
-    })
+    });
   }
 
   res.status(200).end();
