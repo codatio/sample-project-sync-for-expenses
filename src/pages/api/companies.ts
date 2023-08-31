@@ -1,4 +1,5 @@
 import { CodatCommon } from "@codat/common";
+import { CreateRule } from "@codat/common/dist/sdk/models/shared";
 import { CodatSyncExpenses } from "@codat/sync-for-expenses";
 import { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
@@ -50,21 +51,18 @@ const createPartnerExpenseConnection = async (companyId: string) => {
 
 const createWebhooks = async (companyId: string) => {
   const syncCompletedResponse = codatApi.webhooks.create({
-    id: uuidv4(),
     companyId: companyId,
     type: "sync-complete",
     notifiers: { webhook: webhookUrl },
   });
 
   const syncFailedResponse = codatApi.webhooks.create({
-    id: uuidv4(),
     companyId: companyId,
     type: "sync-failed",
     notifiers: { webhook: webhookUrl },
   });
 
   const datasetStatusChangeResponse = codatApi.webhooks.create({
-    id: uuidv4(),
     companyId: companyId,
     type: "Data sync completed",
     notifiers: { webhook: webhookUrl },
