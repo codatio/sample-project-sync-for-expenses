@@ -10,11 +10,6 @@ import styles from "./styles.module.scss";
 import { CodatAccounting } from "@codat/accounting";
 import { Supplier } from "@codat/accounting/dist/sdk/models/shared";
 
-interface SelectOption {
-  label: string;
-  value: string;
-}
-
 const isSupplierApplicable = (transaction: ExpenseItem): boolean => {
   // For QBO, suppliers are only applicable for the Payment transaction type
   return transaction.type == ExpenseTransactionType.Payment;
@@ -229,10 +224,10 @@ const EditExpense = ({
         </div>
 
         <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="account">Contact</label>
+          <label className={styles.inputLabel} htmlFor="contact">Contact</label>
           <select
-            id="account"
-            name="account"
+            id="contact"
+            name="contact"
             disabled={
               // Ideally this would be handled in the API to avoid retrieving all of the contacts when a contact is not applicable for this transaction.
               // However, since for simplicity this demo has the transactions stored locally in the browser, we are doing this check locally.
