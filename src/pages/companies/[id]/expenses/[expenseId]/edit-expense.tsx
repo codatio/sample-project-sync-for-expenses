@@ -230,18 +230,18 @@ const EditExpense = ({
 
         <div className={styles.formRow}>
           <label className={styles.inputLabel} htmlFor="account">Contact</label>
-          <select id="account" name="account"
+          <select
+            id="account"
+            name="account"
             disabled={
               // Ideally this would be handled in the API to avoid retrieving all of the contacts when a contact is not applicable for this transaction.
               // However, since for simplicity this demo has the transactions stored locally in the browser, we are doing this check locally.
               !isSupplierApplicable(expenseTransaction)
-            }>
+            }
+            defaultValue={expenseTransaction.contactRef?.id}
+          >
             {suppliers!.map((supplier) => (
-              <option
-                key={supplier.id}
-                value={supplier.id}
-                selected={supplier.id === expenseTransaction.contactRef?.id}
-              >
+              <option key={supplier.id} value={supplier.id}>
                 {`${supplier.supplierName} (${supplier.defaultCurrency})`}
               </option>
             ))}
