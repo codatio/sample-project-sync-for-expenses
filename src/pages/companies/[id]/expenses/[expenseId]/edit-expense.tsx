@@ -4,24 +4,11 @@ import { GetServerSidePropsContext } from "next";
 
 import { ExpenseItem } from "@/data/expenseItem";
 import { CodatSyncExpenses } from "@codat/sync-for-expenses";
-import { ExpenseTransactionType, MappingOptions } from "@codat/sync-for-expenses/dist/sdk/models/shared";
+import { MappingOptions } from "@codat/sync-for-expenses/dist/sdk/models/shared";
 
 import styles from "./styles.module.scss";
-import { CodatAccounting } from "@codat/accounting";
-import { Supplier } from "@codat/accounting/dist/sdk/models/shared";
-
-const isSupplierApplicable = (transaction: ExpenseItem): boolean => {
-  // For QBO, suppliers are only applicable for the Payment transaction type
-  return transaction.type == ExpenseTransactionType.Payment;
-};
 
 const syncForExpensesApi = new CodatSyncExpenses({
-  security: {
-    authHeader: process.env.CODAT_AUTH_HEADER as string,
-  },
-});
-
-const accountingApi = new CodatAccounting({
   security: {
     authHeader: process.env.CODAT_AUTH_HEADER as string,
   },
@@ -32,39 +19,23 @@ export const getServerSideProps = async (
 ) => {
   const { id: companyId } = context.query;
 
-  const mappingOptionsResponse =
+  const mappingOptions =
     await syncForExpensesApi.mappingOptions.getMappingOptions({
       companyId: companyId as string,
     });
 
-  if (mappingOptionsResponse.statusCode !== 200) {
-    console.log("Failed to get mapping options", mappingOptionsResponse.rawResponse);
+  if (mappingOptions.statusCode !== 200) {
+    console.log("Failed to get mapping options", mappingOptions.rawResponse);
     console.log(
-      Buffer.from(mappingOptionsResponse.rawResponse?.data, "binary").toString("utf8")
+      Buffer.from(mappingOptions.rawResponse?.data, "binary").toString("utf8")
     );
     throw new Error("Unable to get mapping options");
-  }
-
-  // TODO: Handle paging
-  const suppliersResponse =
-    await accountingApi.suppliers.list({
-      companyId: companyId as string,
-      query: "status=active"
-    });
-
-  if (suppliersResponse.statusCode !== 200) {
-    console.log("Failed to get suppliers", suppliersResponse.rawResponse);
-    console.log(
-      Buffer.from(suppliersResponse.rawResponse?.data, "binary").toString("utf8")
-    );
-    throw new Error("Unable to get suppliers");
   }
 
   return {
     props: {
       // https://github.com/vercel/next.js/issues/11993
-      mappingOptions: JSON.parse(JSON.stringify(mappingOptionsResponse.mappingOptions)),
-      suppliers: JSON.parse(JSON.stringify(suppliersResponse.suppliers?.results))
+      mappingOptions: JSON.parse(JSON.stringify(mappingOptions.mappingOptions)),
     },
   };
 };
@@ -72,12 +43,10 @@ export const getServerSideProps = async (
 const EditExpense = ({
   expenses,
   mappingOptions,
-  suppliers,
   setExpenses,
 }: {
   expenses: ExpenseItem[];
   mappingOptions: MappingOptions;
-  suppliers: Supplier[];
   setExpenses: Dispatch<SetStateAction<ExpenseItem[]>>;
 }) => {
   const router = useRouter();
@@ -218,26 +187,6 @@ const EditExpense = ({
             {mappingOptions.accounts!.map((account) => (
               <option key={account.id} value={account.id}>
                 {`${account.name} (${account.accountType})`}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="contact">Contact</label>
-          <select
-            id="contact"
-            name="contact"
-            disabled={
-              // Ideally this would be handled in the API to avoid retrieving all of the contacts when a contact is not applicable for this transaction.
-              // However, since for simplicity this demo has the transactions stored locally in the browser, we are doing this check locally.
-              !isSupplierApplicable(expenseTransaction)
-            }
-            defaultValue={expenseTransaction.contactRef?.id}
-          >
-            {suppliers!.map((supplier) => (
-              <option key={supplier.id} value={supplier.id}>
-                {`${supplier.supplierName} (${supplier.defaultCurrency})`}
               </option>
             ))}
           </select>

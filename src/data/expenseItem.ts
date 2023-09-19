@@ -14,15 +14,9 @@ export interface ExpenseItem {
   taxAmount: number;
   sync?: boolean;
   attachment?: File;
-  contactRef?: ContactRef;
 }
 
 export interface TrackingCategory {
   id: string;
   label: string;
-}
-
-export interface ContactRef {
-  id: string;
-  type: string;
 }

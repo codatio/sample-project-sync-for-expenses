@@ -42,7 +42,6 @@ export default async function handler(
           currency: "GBP",
           issueDate: formattedDate,
           id: x.id,
-          contactRef: x.contactRef,
           type: x.type,
           notes: x.note,
           merchantName: "Merchant name",
