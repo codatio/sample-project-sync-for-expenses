@@ -13,6 +13,68 @@ import { ExpenseItem } from "@/data/expenseItem";
 
 import styles from "./styles.module.scss";
 
+const ExpensesTable = ({expenses, processing=false}) => {
+  return (
+    <div className={styles.tableContainer}>
+      <table>
+        <thead>
+          <tr>
+            {!processing && <th>Sync?</th>}
+            <th>Type</th>
+            <th>Employee name</th>
+            <th>Description</th>
+            <th>Note</th>
+            {!processing && <th>Categories</th> }
+            <th>Total</th>
+            <th>Receipt attached</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {expenses.map((item, i) => (
+            <tr key={i}>
+              {!processing && 
+                <td>
+                  <input
+                    type="checkbox"
+                    id={`ready${i}`}
+                    name={`ready${i}`}
+                    value="ready"
+                    checked={item.sync || false}
+                    onChange={() => onSetItemToSync(i)}
+                    disabled={!canBeSynced(item)}
+                  />
+                </td>
+              }
+              <td>{item.type}</td>
+              <td>{item.employeeName}</td>
+              <td>{item.description}</td>
+              <td>{item.note}</td>
+              {!processing && <td>{item.categories.map((c) => c.label).join(", ")}</td>}
+              <td>
+                {Decimal.add(item.netAmount, item.taxAmount).toNumber()}
+              </td>
+              <td>
+                {item.attachment === undefined && <>❌</>}
+                {item.attachment !== undefined && <>✔️</>}
+              </td>
+              <td>
+                <button
+                  onClick={(event) => onClick(event, companyId, item.id)}
+                  disabled = {disabled}
+                >
+                  {!!processing ? "Process" : "Edit" }
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 const ListExpenses = ({
   expenses,
   setExpenses,
@@ -125,61 +187,11 @@ const ListExpenses = ({
       <h1 className={styles.header}>Expenses</h1>
 
       <form onSubmit={onSubmit}>
-        <div className={styles.tableContainer}>
-          <table>
-            <thead>
-              <tr>
-                <th>Sync?</th>
-                <th>Type</th>
-                <th>Employee name</th>
-                <th>Description</th>
-                <th>Note</th>
-                <th>Categories</th>
-                <th>Total</th>
-                <th>Receipt attached</th>
-                <th>Options</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {expenses.map((item, i) => (
-                <tr key={i}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      id={`ready${i}`}
-                      name={`ready${i}`}
-                      value="ready"
-                      checked={item.sync || false}
-                      onChange={() => onSetItemToSync(i)}
-                      disabled={!canBeSynced(item)}
-                    />
-                  </td>
-                  <td>{item.type}</td>
-                  <td>{item.employeeName}</td>
-                  <td>{item.description}</td>
-                  <td>{item.note}</td>
-                  <td>{item.categories.map((c) => c.label).join(", ")}</td>
-                  <td>
-                    {Decimal.add(item.netAmount, item.taxAmount).toNumber()}
-                  </td>
-                  <td>
-                    {item.attachment === undefined && <>❌</>}
-                    {item.attachment !== undefined && <>✔️</>}
-                  </td>
-                  <td>
-                    <button
-                      onClick={(event) => onClick(event, companyId, item.id)}
-                      disabled = {disabled}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <h4>Expenses to process</h4>
+        <ExpensesTable expenses={expenses.filter(expenses.categories?.length <= 0)} processing/>
+        
+        <h4>Ready to sync</h4>
+        <ExpensesTable expenses={expenses.filter(expenses.categories?.length > 0)}/>
         <button disabled={!isSyncable || disabled} type="submit">Sync</button>
       </form>
     </div>
