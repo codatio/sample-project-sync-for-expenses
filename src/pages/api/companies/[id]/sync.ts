@@ -70,7 +70,16 @@ export default async function handler(
     console.log(
       Buffer.from(result.rawResponse?.data, "binary").toString("utf8")
     );
-    res.status(500).end();
+    if (result.statusCode < 500 && result.statusCode >= 400) {
+      const responseJson = JSON.parse(Buffer.from(result.rawResponse?.data, "binary").toString("utf8"));
+      res.status(400).json({
+        error: responseJson.error,
+        validation: responseJson.validation
+      })
+    }
+    else {
+      res.status(500).end();
+    }    
     return;
   }
   const datasetId = result.createExpenseResponse!.datasetId!;
@@ -87,9 +96,18 @@ export default async function handler(
     console.log(
       Buffer.from(createSyncResult.rawResponse?.data, "binary").toString("utf8")
     );
-    res.status(500).end();
+    if (createSyncResult.statusCode < 500 && createSyncResult.statusCode >= 400) {
+      const syncResponseJson = JSON.parse(Buffer.from(createSyncResult.rawResponse?.data, "binary").toString("utf8"));
+      res.status(400).json({
+        error: syncResponseJson.error,
+        validation: syncResponseJson.validation,        
+      })
+    }
+    else {
+      res.status(500).end();
+    }    
     return;
-  }
+  }  
 
   res.status(200).json({
     syncId: createSyncResult.syncInitiated?.syncId!,
