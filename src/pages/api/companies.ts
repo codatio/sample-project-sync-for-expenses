@@ -46,8 +46,6 @@ const createPartnerExpenseConnection = async (companyId: string) => {
     throw new Error("Failed to create partner expense connection");
   }
 
-  console.log("connection", response.connection);
-
   return { connectionId: response.connection!.id };
 };
 
