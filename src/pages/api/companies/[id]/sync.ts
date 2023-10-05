@@ -1,5 +1,5 @@
 import { ExpenseItem } from "@/data/expenseItem";
-import { CreateExpenseDatasetRequest } from "@codat/sync-for-expenses/dist/sdk/models/operations";
+import { CreateExpenseTransactionRequest } from "@codat/sync-for-expenses/dist/sdk/models/operations";
 import {
   ExpenseTransaction,
   ExpenseTransactionType,
@@ -34,7 +34,7 @@ export default async function handler(
 
   const formattedDate = `${year}-${month}-${day}`;
 
-  const request: CreateExpenseDatasetRequest = {
+  const request: CreateExpenseTransactionRequest = {
     companyId,
     createExpenseRequest: {
       items: body.map((x) => {
@@ -62,7 +62,7 @@ export default async function handler(
 
   console.log(request.createExpenseRequest?.items?.map((x) => x.lines));
 
-  const result = await syncForExpensesApi.expenses.createExpenseDataset(
+  const result = await syncForExpensesApi.expenses.create(
     request
   );
   if (result.statusCode !== 200) {
@@ -75,9 +75,9 @@ export default async function handler(
   }
   const datasetId = result.createExpenseResponse!.datasetId!;
 
-  const createSyncResult = await syncForExpensesApi.sync.intiateSync({
+  const createSyncResult = await syncForExpensesApi.sync.initiateSync({
     companyId: companyId,
-    postSync: {
+    initiateSync: {
       datasetIds: [datasetId],
     },
   });

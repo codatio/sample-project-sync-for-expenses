@@ -39,7 +39,7 @@ export default async function handler(
     return;
   }
 
-  const status = await syncForExpensesApi.syncStatus.getSyncById({
+  const status = await syncForExpensesApi.sync.get({
     syncId: syncId,
     companyId: companyId,
   });

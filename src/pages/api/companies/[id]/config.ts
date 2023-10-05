@@ -15,7 +15,7 @@ const syncForExpensesApi = new CodatSyncExpenses({
 
 const saveConfig = async (companyId: string, request: SaveCompanyConfigRequest) => {
   const updateConfigResponse =
-    await syncForExpensesApi.configuration.saveCompanyConfiguration({
+    await syncForExpensesApi.configuration.set({
       companyId,
       companyConfiguration: {
         bankAccount: {

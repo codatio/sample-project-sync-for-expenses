@@ -1,3 +1,4 @@
+import { ContactRef } from "@codat/sync-for-expenses/dist/sdk/models/shared";
 import { ExpenseTransactionType } from "@codat/sync-for-expenses/dist/sdk/models/shared/expensetransaction";
 
 export interface ExpenseItem {
@@ -20,9 +21,4 @@ export interface ExpenseItem {
 export interface TrackingCategory {
   id: string;
   label: string;
-}
-
-export interface ContactRef {
-  id: string;
-  type: string;
 }

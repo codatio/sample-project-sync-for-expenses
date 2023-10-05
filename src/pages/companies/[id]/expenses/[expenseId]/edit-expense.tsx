@@ -4,7 +4,7 @@ import { GetServerSidePropsContext } from "next";
 
 import { ExpenseItem } from "@/data/expenseItem";
 import { CodatSyncExpenses } from "@codat/sync-for-expenses";
-import { ExpenseTransactionType, MappingOptions } from "@codat/sync-for-expenses/dist/sdk/models/shared";
+import { ContactRefType, ExpenseTransactionType, MappingOptions } from "@codat/sync-for-expenses/dist/sdk/models/shared";
 
 import styles from "./styles.module.scss";
 import { CodatAccounting } from "@codat/accounting";
@@ -33,7 +33,7 @@ export const getServerSideProps = async (
   const { id: companyId } = context.query;
 
   const mappingOptionsResponse =
-    await syncForExpensesApi.mappingOptions.getMappingOptions({
+    await syncForExpensesApi.configuration.getMappingOptions({
       companyId: companyId as string,
     });
 
@@ -87,6 +87,11 @@ const EditExpense = ({
     (transaction) => transaction.id === transactionId
   )!;
   const [disabled, setDisabled] = useState(false);
+  const [isOverrideContactVisible, setOverrideContactIsVisible] = useState(false);
+
+  const toggleOverrideContactVisibility = () => {
+    setOverrideContactIsVisible(state => !state);
+  };
 
   const onAttachmentRemoved = () => {
     setExpenses((s) =>
@@ -131,7 +136,7 @@ const EditExpense = ({
               attachment: attachment,
               accountId: accountInput!.valueOf().toString(),
               taxRateId: taxRateInput!.valueOf().toString(),
-              contactRef: isSupplierApplicable(expense) && contactInput ? { id: contactInput.valueOf().toString(), type: "supplier"} : undefined,
+              contactRef: isOverrideContactVisible && isSupplierApplicable(expense) && contactInput ? { id: contactInput.valueOf().toString(), type: ContactRefType.Supplier } : undefined,
               categories: trackingCategoriesInput.map((tc) => {
                 const cat = mappingOptions.trackingCategories!.find(
                   (x) => x.id === tc!.valueOf().toString()
@@ -226,24 +231,45 @@ const EditExpense = ({
         </div>
 
         <div className={styles.formRow}>
-          <label className={styles.inputLabel} htmlFor="contact">Contact</label>
-          <select
-            id="contact"
-            name="contact"
-            disabled={
-              // Ideally this would be handled in the API to avoid retrieving all of the contacts when a contact is not applicable for this transaction.
-              // However, since for simplicity this demo has the transactions stored locally in the browser, we are doing this check locally.
-              !isSupplierApplicable(expenseTransaction)
-            }
-            defaultValue={expenseTransaction.contactRef?.id}
+          <label
+            className={styles.inputLabel}
+            htmlFor="overrideSupplier"
           >
-            {suppliers!.map((supplier) => (
-              <option key={supplier.id} value={supplier.id}>
-                {`${supplier.supplierName} (${supplier.defaultCurrency})`}
-              </option>
-            ))}
-          </select>
+          Override supplier:
+          </label>
+          <input
+            disabled = {!isSupplierApplicable(expenseTransaction)}
+            type="checkbox"
+            id="overrideSupplier"
+            checked={isOverrideContactVisible}
+            onChange={toggleOverrideContactVisibility}
+          />
+          {!isSupplierApplicable(expenseTransaction) && <div className={styles.textError} >
+            Overriding a supplier is not available for refunds
+          </div>}
         </div>
+
+        {isOverrideContactVisible && (
+          <div className={styles.formRow}>
+            <label className={styles.inputLabel} htmlFor="contact">Contact</label>
+            <select
+              id="contact"
+              name="contact"
+              disabled={
+                // Ideally this would be handled in the API to avoid retrieving all of the contacts when a contact is not applicable for this transaction.
+                // However, since for simplicity this demo has the transactions stored locally in the browser, we are doing this check locally.
+                !isSupplierApplicable(expenseTransaction)
+              }
+              defaultValue={expenseTransaction.contactRef?.id}
+            >
+              {suppliers!.map((supplier) => (
+                <option key={supplier.id} value={supplier.id}>
+                  {`${supplier.supplierName} (${supplier.defaultCurrency})`}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className={styles.formRow}>
           <label className={styles.inputLabel} htmlFor="attachment">
