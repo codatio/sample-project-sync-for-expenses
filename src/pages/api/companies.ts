@@ -46,7 +46,7 @@ const createPartnerExpenseConnection = async (companyId: string) => {
     throw new Error("Failed to create partner expense connection");
   }
 
-  return { connectionId: response.dataConnection!.id };
+  return { connectionId: response.connection!.id };
 };
 
 const createWebhooks = async (companyId: string) => {

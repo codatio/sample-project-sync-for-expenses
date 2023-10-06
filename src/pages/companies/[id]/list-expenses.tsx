@@ -23,6 +23,7 @@ const ListExpenses = ({
   const router = useRouter();
   const companyId = router.query.id as string;
   const [disabled, setDisabled] = useState(false);
+  const [syncErrorResponse, setSyncErrorResponse] = useState([]);
 
   const onClick = async (
     event: React.MouseEvent,
@@ -72,6 +73,8 @@ const ListExpenses = ({
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();   
     setDisabled(true);
+    setSyncErrorResponse([]);
+
     const expensesToSync: ExpenseItem[] = expenses.filter((e) => e.sync);
 
     if (expensesToSync.some((x) => x.attachment !== undefined)) {
@@ -90,6 +93,10 @@ const ListExpenses = ({
 
     if (response.status !== 200) {
       setDisabled(false);
+      const responseInformation = await response.json();
+      if (responseInformation.validation?.errors.length > 0) {
+        setSyncErrorResponse(responseInformation.validation.errors.map((error: { message: string; }) => error.message));
+      }        
       throw new Error("Sync failed");
     }
 
@@ -179,8 +186,13 @@ const ListExpenses = ({
               ))}
             </tbody>
           </table>
-        </div>
-        <button disabled={!isSyncable || disabled} type="submit">Sync</button>
+        </div>        
+        <button disabled={!isSyncable || disabled} type="submit">Sync</button>   
+         <ul className={styles.listUnstyled}>
+            {syncErrorResponse.map((item, index) => (
+              <li className={styles.textError} key={index}>{item}</li>
+            ))}
+          </ul>  
       </form>
     </div>
   );

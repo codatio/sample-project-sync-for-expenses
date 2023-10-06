@@ -1,5 +1,5 @@
 import { ExpenseItem } from "@/data/expenseItem";
-import { CreateExpenseDatasetRequest } from "@codat/sync-for-expenses/dist/sdk/models/operations";
+import { CreateExpenseTransactionRequest } from "@codat/sync-for-expenses/dist/sdk/models/operations";
 import {
   ExpenseTransaction,
   ExpenseTransactionType,
@@ -12,6 +12,15 @@ const syncForExpensesApi = new CodatSyncExpenses({
     authHeader: process.env.CODAT_AUTH_HEADER as string,
   },
 });
+
+const createErrorResponse = (buffer: any) : any => {
+  const responseJson = JSON.parse(Buffer.from(buffer, "binary").toString("utf8"));
+  
+  return {
+    error: responseJson.error,
+    validation: responseJson.validation
+  };
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,7 +43,7 @@ export default async function handler(
 
   const formattedDate = `${year}-${month}-${day}`;
 
-  const request: CreateExpenseDatasetRequest = {
+  const request: CreateExpenseTransactionRequest = {
     companyId,
     createExpenseRequest: {
       items: body.map((x) => {
@@ -42,6 +51,7 @@ export default async function handler(
           currency: "GBP",
           issueDate: formattedDate,
           id: x.id,
+          contactRef: x.contactRef,
           type: x.type,
           notes: x.note,
           merchantName: "Merchant name",
@@ -61,7 +71,7 @@ export default async function handler(
 
   console.log(request.createExpenseRequest?.items?.map((x) => x.lines));
 
-  const result = await syncForExpensesApi.expenses.createExpenseDataset(
+  const result = await syncForExpensesApi.expenses.create(
     request
   );
   if (result.statusCode !== 200) {
@@ -69,14 +79,19 @@ export default async function handler(
     console.log(
       Buffer.from(result.rawResponse?.data, "binary").toString("utf8")
     );
-    res.status(500).end();
+    if (result.statusCode < 500 && result.statusCode >= 400) {
+      res.status(400).json(createErrorResponse(result.rawResponse?.data))
+    }
+    else {
+      res.status(500).end();
+    }    
     return;
   }
   const datasetId = result.createExpenseResponse!.datasetId!;
 
-  const createSyncResult = await syncForExpensesApi.sync.intiateSync({
+  const createSyncResult = await syncForExpensesApi.sync.initiateSync({
     companyId: companyId,
-    postSync: {
+    initiateSync: {
       datasetIds: [datasetId],
     },
   });
@@ -86,9 +101,14 @@ export default async function handler(
     console.log(
       Buffer.from(createSyncResult.rawResponse?.data, "binary").toString("utf8")
     );
-    res.status(500).end();
+    if (createSyncResult.statusCode < 500 && createSyncResult.statusCode >= 400) {
+      res.status(400).json(createErrorResponse(result.rawResponse?.data))
+    }
+    else {
+      res.status(500).end();
+    }    
     return;
-  }
+  }  
 
   res.status(200).json({
     syncId: createSyncResult.syncInitiated?.syncId!,
