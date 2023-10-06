@@ -13,6 +13,15 @@ const syncForExpensesApi = new CodatSyncExpenses({
   },
 });
 
+const createErrorResponse = (buffer: any) : any => {
+  const responseJson = JSON.parse(Buffer.from(buffer, "binary").toString("utf8"));
+  
+  return {
+    error: responseJson.error,
+    validation: responseJson.validation
+  };
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -71,11 +80,7 @@ export default async function handler(
       Buffer.from(result.rawResponse?.data, "binary").toString("utf8")
     );
     if (result.statusCode < 500 && result.statusCode >= 400) {
-      const responseJson = JSON.parse(Buffer.from(result.rawResponse?.data, "binary").toString("utf8"));
-      res.status(400).json({
-        error: responseJson.error,
-        validation: responseJson.validation
-      })
+      res.status(400).json(createErrorResponse(result.rawResponse?.data))
     }
     else {
       res.status(500).end();
@@ -97,11 +102,7 @@ export default async function handler(
       Buffer.from(createSyncResult.rawResponse?.data, "binary").toString("utf8")
     );
     if (createSyncResult.statusCode < 500 && createSyncResult.statusCode >= 400) {
-      const syncResponseJson = JSON.parse(Buffer.from(createSyncResult.rawResponse?.data, "binary").toString("utf8"));
-      res.status(400).json({
-        error: syncResponseJson.error,
-        validation: syncResponseJson.validation,        
-      })
+      res.status(400).json(createErrorResponse(result.rawResponse?.data))
     }
     else {
       res.status(500).end();
